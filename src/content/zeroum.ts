@@ -117,7 +117,7 @@ export const ambientes: Ambiente[] = [
   {
     id: "peso-livre",
     nome: "Peso livre",
-    resumo: "Halteres, barras e anilhas para treino pesado.",
+    resumo: "Halteres com a marca Zero Um, barras e anilhas para treino pesado.",
     detalhe: "Área dedicada a halteres, barras e racks. TODO: listar faixa de pesos e número de racks.",
     foto: "estrutura-peso-livre",
     confirmado: true,
@@ -128,6 +128,14 @@ export const ambientes: Ambiente[] = [
     resumo: "230 máquinas de 10 marcas diferentes.",
     detalhe: "São 230 máquinas de 10 marcas diferentes, para treinar cada grupo muscular com variedade. TODO: listar as marcas.",
     foto: "estrutura-maquinas",
+    confirmado: true,
+  },
+  {
+    id: "gluteo-zone",
+    nome: "Glúteo Zone",
+    resumo: "Área dedicada a glúteos e posteriores.",
+    detalhe: "Espaço sinalizado só para treino de glúteos, com máquinas específicas e racks. TODO: listar os equipamentos da área.",
+    foto: "estrutura-gluteo-zone",
     confirmado: true,
   },
   {

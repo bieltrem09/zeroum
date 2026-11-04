@@ -188,3 +188,45 @@ Todos ficam em `src/content/zeroum.ts` e aparecem no site com o aviso tracejado 
 | Professores | Ainda sem dados | Seção mostra o que os alunos dizem da equipe |
 
 **Não usado:** os preços dos planos Wellhub e TotalPass (Silver a partir de R$ 149,99, TP2 cerca de R$ 119,90…). São preços dos agregadores e variam por cidade e por data. O site mostra só o nome do plano mínimo aceito. As fotos das avaliações também não foram usadas, porque são dos autores das avaliações.
+
+---
+
+## 8. Atualização: fotos reais no site + ajustes de layout (04/11/2026)
+
+### Fotos aplicadas (originais em `Img/`, versões otimizadas em `public/photos/`)
+Ajuste final aplicado em todas: contraste automático com corte mínimo (0,3%), +4% de contraste e nitidez fina (unsharp 1.2px/40%), JPG progressivo q86. O conteúdo das fotos não foi alterado. Cada slot ganhou `position` (object-position) para o recorte não cortar o principal.
+
+| Slot | Onde aparece |
+|---|---|
+| `hero-bg` (máquinas vermelhas + LED branco) | Hero da home |
+| `estrutura-drone` (vista aérea ao entardecer) | Estrutura (home e /estrutura), card "Estrutura 2.500 m²" |
+| `estrutura-peso-livre` (halteres Zero Um CT) | Estrutura |
+| `estrutura-maquinas` (leg press CIMERIAN) | Estrutura |
+| `estrutura-gluteo-zone` (novo ambiente) | Estrutura |
+| `estrutura-recepcao` | Estrutura |
+| `resultados` (racks de halteres) | Seção "TODO DIA" |
+| `cta` (letreiro ZERO UM CT na parede) | CTA final |
+| `footer` (teto com LED vermelho) | Rodapé, com o logo gigante |
+| `madrugada` | /horarios |
+| `fachada` (fachada com "01") | Localização (home e /contato) |
+| `fachada-dia` | Reserva (não usada) |
+
+Não usada: a foto do aluno sentado na máquina (pessoa identificável; precisa de autorização de uso de imagem).
+
+### Bugs e alinhamento corrigidos
+- Fotos de Resultados e do rodapé ficavam mais largas que a tela no mobile (proporção fixa + altura mínima) e cortavam o "TODO DIA" e o logo.
+- "TODO DIA" deslocado para a direita: o `-translate-x-1/2` do Tailwind somava com o `xPercent` do GSAP. Agora é centralizado por flex.
+- /estrutura com 3px de rolagem lateral no desktop: título longo ("MÁQUINAS DE MUSCULAÇÃO") estourava a coluna.
+- Home em 768px (tablet) com rolagem lateral: cards de eventos estreitos demais. Novo grid: 1 / 2 / 4 colunas.
+- Localização: o mapa esticava até 1.100px de altura. Agora fachada + mapa ficam lado a lado com altura fixa.
+- Hero: overlay mais escuro + gradiente lateral para o logo e o título ficarem legíveis sobre a foto real.
+- Removido o recorte tracejado do atleta no hero (só aparece quando houver o PNG real).
+- Home mostra na Estrutura só os ambientes com foto real; /estrutura mostra todos.
+- Antes/depois some da home enquanto não houver transformação autorizada (continua em /resultados com o aviso).
+- Eventos sem foto viram cards tipográficos em vez de quadros vazios.
+- Sem rolagem lateral em 320, 375, 768, 1024, 1440 e 1920px.
+
+### Performance com as fotos
+- Logos estáticos (nav, menu, rodapé) viraram arquivos SVG (`<img>`) em vez de path inline repetido: HTML da home caiu de 248 KB para 170 KB.
+- Lighthouse mobile da home: 86–87 (simulado). O LCP **real** medido com throttling do DevTools é **2,1 s** (meta < 2,5 s); o LCP simulado é 3,7–4,0 s. O que ainda pesa é o TBT (tempo de JS no celular simulado, ~150–650 ms). Próximo passo, se quiser chegar a 95: transformar `Horarios24` e `Planos` em Server Components com ilhas menores.
+- Páginas internas: /estrutura 97 · acessibilidade, boas práticas e SEO seguem em 100.

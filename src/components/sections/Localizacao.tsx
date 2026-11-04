@@ -4,6 +4,7 @@ import { MapPin } from "lucide-react";
 import { zeroum } from "@/content/zeroum";
 import { WA_GERAL } from "@/lib/whatsapp";
 import { SectionLabel } from "@/components/ui/SectionHead";
+import { Media } from "@/components/ui/Media";
 
 const EMBED = `https://www.google.com/maps?q=${encodeURIComponent("Zero Um CT Americana")}&output=embed`;
 
@@ -59,7 +60,12 @@ export function Localizacao({ label = "12" }: { label?: string }) {
           </div>
         </div>
 
-        <div className="relative min-h-[360px] overflow-hidden rounded-[var(--radius-photo)] lg:col-span-8 lg:min-h-[520px]">
+        <div className="grid gap-3 sm:grid-cols-5 lg:col-span-8">
+        <figure className="sm:col-span-2">
+          <Media slot="fachada" keepRatio={false} className="aspect-[4/5] w-full sm:aspect-auto sm:h-[520px]" sizes="(min-width:1024px) 26vw, (min-width:640px) 40vw, 100vw" />
+          <figcaption className="label mt-3 text-gray-300">Procure o “01” vermelho na fachada</figcaption>
+        </figure>
+        <div className="relative h-[360px] overflow-hidden rounded-[var(--radius-photo)] sm:col-span-3 sm:h-[520px]">
           {live ? (
             <iframe
               src={EMBED}
@@ -83,6 +89,7 @@ export function Localizacao({ label = "12" }: { label?: string }) {
               </button>
             </>
           )}
+        </div>
         </div>
       </div>
     </section>

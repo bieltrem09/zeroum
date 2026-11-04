@@ -21,12 +21,12 @@ export default function EstruturaPage() {
           <ol className="mt-20 space-y-20 md:space-y-28">
             {ambientes.map((a, i) => (
               <li key={a.id} id={a.id} className="grid scroll-mt-28 gap-8 md:grid-cols-12 md:items-center">
-                <div className={`md:col-span-7 ${i % 2 ? "md:order-2 md:col-start-6" : ""}`}>
+                <div className={`min-w-0 md:col-span-7 ${i % 2 ? "md:order-2 md:col-start-6" : ""}`}>
                   <Media slot={a.foto} sizes="(min-width:768px) 58vw, 100vw" />
                 </div>
-                <div className={`md:col-span-4 ${i % 2 ? "md:order-1 md:col-start-1" : "md:col-start-9"}`}>
+                <div className={`min-w-0 md:col-span-5 ${i % 2 ? "md:order-1 md:col-start-1" : "md:col-start-8"}`}>
                   <p className="label text-red-bright">{String(i + 1).padStart(2, "0")}</p>
-                  <h2 className="display mt-3 text-[clamp(2.5rem,5vw,4.5rem)]">{a.nome}</h2>
+                  <h2 className="display mt-3 text-[clamp(2.25rem,4vw,4rem)] [overflow-wrap:anywhere]">{a.nome}</h2>
                   <p className="mt-4 text-lg">{a.resumo}</p>
                   <p className="mt-4 text-gray-300">{a.detalhe.replace(/\s*TODO:.*$/, "")}</p>
                   {(a.detalhe.includes("TODO") || !a.confirmado) && (

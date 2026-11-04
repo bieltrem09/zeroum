@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ambientes } from "@/content/zeroum";
+import { media } from "@/content/media";
 import { Media } from "@/components/ui/Media";
 import { SectionLabel } from "@/components/ui/SectionHead";
 
@@ -10,7 +11,8 @@ const alturas = ["lg:h-[62vh]", "lg:h-[48vh]", "lg:h-[56vh]", "lg:h-[66vh]", "lg
  * (data-fx="hscroll", só ≥1024px sem reduced-motion). Mobile: carrossel nativo com scroll-snap.
  */
 export function EstruturaScroller() {
-  const lista = ambientes.filter((a) => a.confirmado);
+  // Na home só entram ambientes que já têm foto real (a página /estrutura mostra todos).
+  const lista = ambientes.filter((a) => a.confirmado && media[a.foto]?.src);
 
   return (
     <section aria-labelledby="estrutura-title" className="relative z-10 bg-black pt-24 md:pt-32">

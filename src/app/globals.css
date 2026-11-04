@@ -471,9 +471,6 @@ dialog.menu::backdrop {
     .hero-frame {
       animation: hero-frame 1.2s var(--ease-in-out) both;
     }
-    .hero-bg {
-      animation: hero-bg 1.4s var(--ease-out) both;
-    }
     .hero-wordmark path[data-letter] {
       transform-box: fill-box;
       animation: hero-letter 1s var(--ease-out) both;

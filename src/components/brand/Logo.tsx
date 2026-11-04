@@ -1,39 +1,33 @@
-import { CT_PATH, LOGO_VIEWBOX, WORDMARK_LETTERS, WORDMARK_PATH, WORDMARK_VIEWBOX } from "./logo-paths";
+import { WORDMARK_LETTERS, WORDMARK_VIEWBOX } from "./logo-paths";
 
 type Variant = "white-red" | "black-red" | "mono-white" | "mono-black";
 
-const fills: Record<Variant, [string, string]> = {
-  "white-red": ["var(--color-white)", "var(--color-red)"],
-  "black-red": ["var(--color-black)", "var(--color-red)"],
-  "mono-white": ["var(--color-white)", "var(--color-white)"],
-  "mono-black": ["var(--color-black)", "var(--color-black)"],
-};
+/** Proporção do kit (viewBox 976 × 209.5). */
+const W = 976;
+const H = 209.5;
 
 /**
- * Logo oficial (vetor do kit em public/brand). Nunca recriar com fonte.
- * Largura mínima 120px; área de proteção = altura do "CT." (aplicada via padding pelo uso).
+ * Logo oficial = arquivo SVG do kit em public/brand (nunca recriar com fonte).
+ * Como <img>: o navegador baixa uma vez e reaproveita em todas as páginas, sem
+ * repetir ~13 KB de path no HTML e no payload do React (code-performance).
+ * Largura mínima 120px; área de proteção = altura do "CT.".
  */
-export function Logo({
-  variant = "white-red",
-  className,
-  title = "Zero Um CT",
-}: {
-  variant?: Variant;
-  className?: string;
-  title?: string;
-}) {
-  const [w, r] = fills[variant];
+export function Logo({ variant = "white-red", className, title = "Zero Um CT" }: { variant?: Variant; className?: string; title?: string }) {
   return (
-    <svg viewBox={LOGO_VIEWBOX} className={className} role="img" aria-label={title}>
-      <path fill={w} fillRule="evenodd" d={WORDMARK_PATH} />
-      <path fill={r} fillRule="evenodd" d={CT_PATH} />
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={`/brand/zeroum-logo-${variant}.svg`} width={W} height={H} alt={title} className={className} decoding="async" />
   );
 }
 
+/** Só a palavra ZEROUM (branca), como imagem: para usos estáticos (footer). */
+export function WordmarkImage({ className }: { className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/brand/zeroum-wordmark-white.svg" width={976} height={128} alt="" aria-hidden="true" className={className} loading="lazy" decoding="async" />;
+}
+
 /**
- * Só a palavra ZEROUM, uma <path> por letra (para o stagger do hero e o
- * logo gigante do footer). Decorativa: aria-hidden.
+ * Só a palavra ZEROUM, uma <path> por letra (para o stagger da intro do hero).
+ * Inline de propósito: as letras são animadas uma a uma. Decorativa: aria-hidden.
  */
 export function Wordmark({ className, fill = "currentColor" }: { className?: string; fill?: string }) {
   return (

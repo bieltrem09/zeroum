@@ -20,15 +20,16 @@ export function Resultados({ label = "08", full = false }: { label?: string; ful
         </h2>
 
         <div className="res-foto relative mt-12">
-          <Media slot="resultados" sizes="(min-width:1440px) 1392px, 100vw" className="min-h-[320px]" />
-          <p
-            data-fx="drift" className="todo-dia display pointer-events-none absolute -bottom-[0.18em] left-1/2 w-max -translate-x-1/2 text-mega text-red [text-shadow:0_10px_40px_rgb(0_0_0/0.35)]"
-            aria-hidden="true"
-          >
-            Todo dia
-          </p>
+          <Media slot="resultados" keepRatio={false} sizes="(min-width:1440px) 1392px, 100vw" className="h-[340px] w-full md:aspect-video md:h-auto" />
+          {/* Centralizado por flex (não por translate) para não brigar com o xPercent do GSAP */}
+          <div className="pointer-events-none absolute inset-x-0 -bottom-[0.18em] flex justify-center text-mega" aria-hidden="true">
+            <p data-fx="drift" className="todo-dia display w-max text-red [text-shadow:0_10px_40px_rgb(0_0_0/0.35)]">
+              Todo dia
+            </p>
+          </div>
         </div>
 
+        {(full || exemplo) && (
         <div className="mt-24 grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <h3 className="display text-[clamp(2.25rem,4vw,3.5rem)]">Antes e depois</h3>
@@ -46,6 +47,7 @@ export function Resultados({ label = "08", full = false }: { label?: string; ful
             {exemplo && <p className="label mt-3 text-gray-300">{exemplo.nome} · {exemplo.dado}</p>}
           </div>
         </div>
+        )}
 
         {(full || conquistas.length > 0) && (
           <div className="mt-20">

@@ -34,6 +34,7 @@ export function Media({ slot, className = "", sizes = "100vw", priority, keepRat
           priority={priority}
           fetchPriority={priority ? "high" : undefined}
           className={`object-cover ${imgClassName}`}
+          style={s.position ? { objectPosition: s.position } : undefined}
         />
       </div>
     );

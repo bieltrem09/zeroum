@@ -35,19 +35,14 @@ export function Hero() {
 
         {/* Camada 3 · recorte do atleta (por cima do logo) */}
         <div className="hero-athlete absolute bottom-0 right-[4%] -z-10 aspect-[4/5] h-[62%] md:right-[10%] md:h-[80%]">
-          {athlete.src ? (
+          {athlete.src && (
             <Media slot="hero-athlete-f" keepRatio={false} rounded={false} className="h-full w-full" imgClassName="!object-contain object-bottom" sizes="(min-width:768px) 40vw, 60vw" priority />
-          ) : (
-            <div className="relative h-full w-full rounded-t-[999px] border border-dashed border-white/25 bg-[radial-gradient(60%_50%_at_50%_30%,rgb(255_255_255/0.07),transparent)]" role="img" aria-label={athlete.alt + " (recorte em produção)"}>
-              <span className="label absolute inset-x-0 top-[38%] hidden text-center text-white/50 md:block">
-                <span className="text-red-bright">■</span> RECORTE · hero-athlete-f
-              </span>
-            </div>
           )}
         </div>
 
         {/* Camada 4 · gradiente para leitura */}
-        <div className="absolute inset-0 -z-[5] bg-[linear-gradient(to_top,rgb(11_11_11/0.92)_0%,rgb(11_11_11/0.35)_45%,transparent_70%)]" aria-hidden="true" />
+        <div className="absolute inset-0 -z-25 bg-black/45" aria-hidden="true" />
+        <div className="absolute inset-0 -z-[5] bg-[linear-gradient(to_top,rgb(11_11_11/0.95)_0%,rgb(11_11_11/0.55)_40%,transparent_72%),linear-gradient(to_right,rgb(11_11_11/0.6)_0%,transparent_60%)]" aria-hidden="true" />
 
         {/* Chips superiores */}
         <div className="flex flex-wrap items-start justify-end gap-2 p-4 pt-[calc(var(--nav-h)+0.5rem)] md:p-6 md:pt-[calc(var(--nav-h)+1rem)]">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo, Wordmark } from "@/components/brand/Logo";
+import { Logo, WordmarkImage } from "@/components/brand/Logo";
 import { Media } from "@/components/ui/Media";
 import { navLinks, zeroum } from "@/content/zeroum";
 import { WA_GERAL } from "@/lib/whatsapp";
@@ -63,10 +63,10 @@ export function Footer() {
 
         {/* Logo gigante sobre foto arredondada */}
         <div className="relative mt-20 overflow-hidden rounded-[var(--radius-photo)]">
-          <Media slot="footer" sizes="(min-width:1440px) 1392px, 100vw" className="min-h-[220px]" rounded={false} />
+          <Media slot="footer" keepRatio={false} sizes="(min-width:1440px) 1392px, 100vw" className="h-[240px] w-full md:aspect-[21/9] md:h-auto" rounded={false} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />
           <div className="absolute inset-x-[4%] bottom-[8%]">
-            <Wordmark className="w-full text-white" />
+            <WordmarkImage className="h-auto w-full" />
           </div>
         </div>
 
