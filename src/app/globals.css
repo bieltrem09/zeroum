@@ -648,3 +648,41 @@ dialog.menu::backdrop {
     opacity: 0;
   }
 }
+
+/* =====================================================================
+   Como começar — celular: "digitando…" e selos flutuando
+   ===================================================================== */
+@layer components {
+  .typing-dot {
+    animation: typing-dot 1s ease-in-out infinite;
+  }
+  .float-chip {
+    animation: float-chip 5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .typing-dot,
+    .float-chip {
+      animation: none;
+    }
+  }
+}
+@keyframes typing-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+@keyframes float-chip {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

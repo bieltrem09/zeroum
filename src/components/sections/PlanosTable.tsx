@@ -1,46 +1,47 @@
 "use client";
-import { PricingTable, type PricingPlan } from "@/components/ui/pricing-table";
+import { Pricing, type PricingPlanItem } from "@/components/ui/pricing";
 import { formasDeTreinar } from "@/content/zeroum";
 import { waLink } from "@/lib/whatsapp";
 
-/** R$ 170 (inteiro) · R$ 39,90 (com centavos) */
-const brl = (v: number) =>
-  v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 });
-
-const plans: PricingPlan[] = formasDeTreinar.map((f) => ({
+const plans: PricingPlanItem[] = formasDeTreinar.map((f) => ({
   id: f.id,
   name: f.nome,
-  description: f.descricao,
   price: f.preco,
+  yearlyPrice: f.precoAnual ?? f.preco,
   period: f.periodo,
   priceFallback: f.precoTexto,
-  priceNote: f.nota,
-  isRecommended: f.destaque,
+  note: f.notaAnual ? { monthly: f.nota ?? "", annually: f.notaAnual } : f.nota,
+  features: f.inclui,
+  description: f.descricao,
   buttonText: f.botao,
-  features: f.inclui.map((name, i) => ({ id: `${f.id}-${i}`, name, included: true })),
+  isPopular: f.destaque,
 }));
 
-/** Tabela de planos (componente shadcn `pricing-table`) com as formas reais de treinar. */
+/** Planos no estilo Pricing (@Codehagen · 21st), com as formas de treinar da Zero Um. */
 export function PlanosTable() {
-  const onSelect = (id: string) => {
+  const onSelect = (id: string, cycle: "monthly" | "annually") => {
     const f = formasDeTreinar.find((x) => x.id === id);
     if (!f) return;
-    const url = f.link.startsWith("whatsapp:") ? waLink(f.link.slice("whatsapp:".length)) : f.link;
+    let url = f.link.startsWith("whatsapp:") ? f.link.slice("whatsapp:".length) : f.link;
+    if (f.link.startsWith("whatsapp:")) {
+      if (f.precoAnual) url = cycle === "annually" ? "Olá, Zero Um! Quero o Plano Zero Um anual (R$ 149/mês)." : "Olá, Zero Um! Quero o Plano Zero Um mensal (R$ 170/mês).";
+      url = waLink(url);
+    }
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <PricingTable
+    <Pricing
       plans={plans}
-      billingCycle="monthly"
       onSelect={onSelect}
-      formatPrice={brl}
-      data-fx="rise"
-      className="max-w-none px-0 py-0 md:py-0"
       labels={{
-        recommended: "Mais procurado",
-        monthlyPeriod: "/mês",
-        selectPlan: (name) => `${name}: abrir contato`,
+        popular: "Mais procurado",
+        toggle: (
+          <>
+            Anual <span className="text-red-bright">(economize R$ 252)</span>
+          </>
+        ),
+        toggleAria: "Ver o valor do Plano Zero Um no anual",
       }}
     />
   );

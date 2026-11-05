@@ -269,3 +269,12 @@ Não usada: a foto do aluno sentado na máquina (pessoa identificável; precisa 
 - Plano Anual: **R$ 149/mês** (12 meses; "economia de R$ 252 no ano")
 
 Os dois ficam em `formasDeTreinar` (`src/content/zeroum.ts`, marcados com `PRECOS_FICTICIOS = true`). Aparecem também no FAQ "Quanto custa?", em "Como começar" e na meta description de /planos. **Trocar pelos valores reais antes de divulgar o site.** A diária (R$ 39,90) é real. Wellhub e TotalPass foram unidos em um único card.
+
+---
+
+## 11. Planos estilo Codehagen, avaliações estilo tweet/Google e celular "Como começar" (05/11/2026)
+
+- **Planos** (`components/ui/pricing.tsx`): recriação do "Pricing" de @Codehagen (21st). O código original não pôde ser baixado porque a cota grátis do dia acabou; a recriação seguiu a descrição oficial (Framer Motion, confete, NumberFlow, plano popular). Cards laterais inclinados em 3D (rotateY ±10°, scale .94), popular elevado, toggle Mensal/Anual com confete vermelho e branco e preço com NumberFlow (R$ 170 ↔ R$ 149). No mobile, o plano em destaque vem primeiro. Dados: Diária · Plano Zero Um (mensal/anual) · Wellhub/TotalPass.
+- **Avaliações** (`components/ui/review-card.tsx`): layout de "tweet card" (ref. @tom_ui) com identidade do Google: logo G, estrelas, selo Local Guide, linha do perfil e mês, em mosaico com entrada em cascata e card-resumo "4,9 · 181 avaliações".
+- **Como começar** (`sections/ComoComecar.tsx`): celular 3D feito em CSS (sem imagem) que endireita com o scroll (spring); na tela, uma conversa **ilustrativa** de WhatsApp no tema da marca ("digitando…", respostas e card de localização). Tudo com informações reais (24h, diária, endereço). Legenda "Conversa ilustrativa". Selos flutuantes; reduced-motion mostra a pose final e a conversa completa.
+- Dependências novas: `motion`, `@number-flow/react` e `canvas-confetti` (este último carregado só ao clicar no toggle). O JS da home subiu cerca de 56 KB gzip; Lighthouse mobile da home ficou em 84–85 (uma execução fora da curva deu 65). Acessibilidade, boas práticas e SEO seguem em 100; CLS 0.

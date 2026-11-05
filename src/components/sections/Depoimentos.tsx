@@ -1,86 +1,55 @@
-"use client";
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import { avaliacaoGoogle, depoimentos, zeroum } from "@/content/zeroum";
 import { SectionLabel } from "@/components/ui/SectionHead";
-import { Todo } from "@/components/ui/Todo";
-import { PillLink } from "@/components/ui/Buttons";
+import { GoogleG, ReviewCard } from "@/components/ui/review-card";
 
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="inline-flex gap-0.5" role="img" aria-label={`${n} de 5 estrelas`}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} size={16} aria-hidden="true" className={i <= n ? "fill-red-bright text-red-bright" : "text-white/25"} />
-      ))}
-    </span>
-  );
-}
-
-/** 09 · DEPOIMENTOS — só avaliações reais do Google. Sem auto-rotação. */
+/**
+ * Avaliações — cards no estilo "tweet" com a cara do Google (logo G, estrelas, perfil),
+ * em mosaico. Só avaliações reais do perfil da Zero Um. Entrada em cascata (data-fx="rise").
+ */
 export function Depoimentos({ label = "09" }: { label?: string }) {
-  const [i, setI] = useState(0);
-  const d = depoimentos[i];
-  const go = (dir: number) => setI((v) => (v + dir + depoimentos.length) % depoimentos.length);
-
+  if (depoimentos.length === 0) return null;
   return (
     <section aria-labelledby="dep-title" className="relative z-10 bg-black py-24 md:py-32">
-      <div className="container-site text-center">
-        <SectionLabel n={label} className="justify-center">
-          Depoimentos
-        </SectionLabel>
-        <h2 id="dep-title" className="sr-only">
-          O que dizem os alunos
-        </h2>
-
-        {avaliacaoGoogle && (
-          <p className="mt-6 inline-flex items-center gap-3">
-            <Stars n={Math.round(avaliacaoGoogle.nota)} />
-            <span className="label">
-              {avaliacaoGoogle.nota.toLocaleString("pt-BR")} no Google · {avaliacaoGoogle.total} avaliações
-            </span>
-          </p>
-        )}
-
-        {d ? (
-          <figure className="mx-auto mt-10 min-h-[18rem] max-w-4xl md:min-h-[16rem]" aria-live="polite">
-            <blockquote className="title text-[clamp(1.6rem,3.4vw,3rem)] font-semibold leading-tight">“{d.texto}”</blockquote>
-            <figcaption className="mt-8 flex flex-col items-center gap-3">
-              <Stars n={d.nota} />
-              <span className="pill bg-red text-white">
-                {d.nome}
-                {d.desde ? ` · aluno(a) desde ${d.desde}` : ""}
-              </span>
-              <span className="label text-gray-300">Avaliação no Google</span>
-            </figcaption>
-          </figure>
-        ) : (
-          <div className="mx-auto mt-10 max-w-3xl">
-            <p className="title text-[clamp(1.6rem,3.4vw,3rem)] font-semibold leading-tight text-white/40">
-              “Os depoimentos dos alunos entram aqui.”
-            </p>
-            <p className="mt-6">
-              <Todo>copiar avaliações reais do Google (nome + texto + nota)</Todo>
-            </p>
+      <div className="container-site">
+        <div className="grid gap-8 md:grid-cols-12 md:items-end">
+          <div className="md:col-span-7">
+            <SectionLabel n={label}>Avaliações</SectionLabel>
+            <h2 id="dep-title" className="display mt-4 text-section">
+              Quem treina
+              <br />
+              <span className="text-red">recomenda.</span>
+            </h2>
           </div>
-        )}
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {depoimentos.length > 1 && (
-            <>
-              <button type="button" onClick={() => go(-1)} className="btn-circle !bg-steel" aria-label="Depoimento anterior">
-                <ArrowLeft size={20} style={{ transform: "none" }} aria-hidden="true" />
-              </button>
-              <span className="label tnum text-gray-300">
-                {String(i + 1).padStart(2, "0")}/{String(depoimentos.length).padStart(2, "0")}
-              </span>
-              <button type="button" onClick={() => go(1)} className="btn-circle" aria-label="Próximo depoimento">
-                <ArrowRight size={20} style={{ transform: "none" }} aria-hidden="true" />
-              </button>
-            </>
+          {avaliacaoGoogle && (
+            <a
+              href={zeroum.mapa}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-5 rounded-[var(--radius-card)] border border-white/10 bg-card p-5 transition-colors duration-200 hover:border-white/25 md:col-span-5 md:justify-self-end"
+            >
+              <GoogleG className="size-10 shrink-0" />
+              <div>
+                <p className="flex items-baseline gap-2">
+                  <span className="display text-5xl leading-none">{avaliacaoGoogle.nota.toLocaleString("pt-BR")}</span>
+                  <span className="text-[#fbbc04]" aria-hidden="true">
+                    ★★★★★
+                  </span>
+                </p>
+                <p className="mt-1 text-sm text-gray-300">
+                  {avaliacaoGoogle.total} avaliações no Google <span className="text-white transition-transform duration-200 group-hover:translate-x-1">→</span>
+                </p>
+              </div>
+            </a>
           )}
-          <PillLink href={zeroum.mapa} tone="outline" external>
-            Ver avaliações no Google
-          </PillLink>
+        </div>
+
+        <div data-fx="rise" className="mt-14 columns-1 gap-4 [column-fill:_balance] sm:columns-2 lg:columns-3">
+          {depoimentos.map((d) => (
+            <div key={d.id} data-fx-item className="mb-4 break-inside-avoid">
+              <ReviewCard name={d.nome} profile={d.perfil} date={d.quando} rating={d.nota} text={d.texto} href={zeroum.mapa} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

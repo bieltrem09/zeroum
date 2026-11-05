@@ -264,6 +264,9 @@ export type FormaDeTreinar = {
   nome: string;
   descricao: string;
   preco: number | null;
+  /** Preço por mês no plano anual (toggle Mensal/Anual). */
+  precoAnual?: number;
+  notaAnual?: string;
   periodo?: string;
   precoTexto?: string;
   nota?: string;
@@ -282,29 +285,6 @@ export const PRECOS_FICTICIOS = true;
 
 export const formasDeTreinar: FormaDeTreinar[] = [
   {
-    id: "mensal",
-    nome: "Plano Mensal",
-    descricao: "Para começar sem compromisso longo. Paga mês a mês e treina quando quiser.",
-    preco: 170,
-    periodo: "/mês",
-    nota: "Matrícula e formas de pagamento na recepção",
-    inclui: ["Musculação 24 horas, todos os dias", "230 máquinas de 10 marcas", "Professores no salão", "Sala Recovery e máquina de gelo"],
-    botao: "Quero o Plano Mensal",
-    link: "whatsapp:Olá, Zero Um! Quero assinar o Plano Mensal (R$ 170/mês).",
-  },
-  {
-    id: "anual",
-    nome: "Plano Anual",
-    descricao: "Para quem já decidiu: o menor valor por mês para treinar o ano inteiro.",
-    preco: 149,
-    periodo: "/mês",
-    nota: "Valor mensal no plano de 12 meses",
-    inclui: ["Tudo do Plano Mensal", "Economia de R$ 252 no ano", "Musculação 24 horas, todos os dias", "Sala Recovery e máquina de gelo"],
-    botao: "Quero o Plano Anual",
-    destaque: true,
-    link: "whatsapp:Olá, Zero Um! Quero assinar o Plano Anual (R$ 149/mês).",
-  },
-  {
     id: "diaria",
     nome: "Diária avulsa",
     descricao: "Para treinar um dia, conhecer a estrutura ou quando está de passagem por Americana.",
@@ -314,6 +294,20 @@ export const formasDeTreinar: FormaDeTreinar[] = [
     inclui: ["Um dia de treino", "Mesma estrutura de quem é aluno"],
     botao: "Quero fazer uma diária",
     link: "whatsapp:Olá, Zero Um! Quero fazer uma diária.",
+  },
+  {
+    id: "plano",
+    nome: "Plano Zero Um",
+    descricao: "No anual, o valor cai para R$ 149 por mês: economia de R$ 252 no ano.",
+    preco: 170,
+    precoAnual: 149,
+    periodo: "/mês",
+    nota: "Mensal: paga mês a mês",
+    notaAnual: "Por mês, no plano de 12 meses",
+    inclui: ["Musculação 24 horas, todos os dias", "230 máquinas de 10 marcas", "Professores no salão", "Sala Recovery e máquina de gelo"],
+    botao: "Quero o Plano Zero Um",
+    destaque: true,
+    link: "whatsapp:Olá, Zero Um! Quero assinar o Plano Zero Um.",
   },
   {
     id: "apps",
@@ -375,7 +369,17 @@ export type Conquista = { id: string; titulo: string; detalhe: string; data: str
 export const conquistas: Conquista[] = [];
 
 /** Só avaliações reais do Google (nome + texto + nota). */
-export type Depoimento = { id: string; nome: string; desde?: string; texto: string; nota: 1 | 2 | 3 | 4 | 5 };
+export type Depoimento = {
+  id: string;
+  nome: string;
+  desde?: string;
+  texto: string;
+  nota: 1 | 2 | 3 | 4 | 5;
+  /** Linha do perfil no Google (como aparece na avaliação). */
+  perfil?: string;
+  /** Mês da avaliação. */
+  quando?: string;
+};
 /**
  * Avaliações públicas reais do perfil da Zero Um CT no Google (nov/2026), nota 5.
  * Textos transcritos como estão; trechos cortados pelo Google terminam em "…"; emojis removidos.
@@ -383,48 +387,64 @@ export type Depoimento = { id: string; nome: string; desde?: string; texto: stri
 export const depoimentos: Depoimento[] = [
   {
     id: "nicolly",
+    perfil: "2 avaliações · 5 fotos",
+    quando: "out. 2026",
     nome: "Nicolly Đianna",
     texto: "Academia top. Atendimento, agilidade no balcão, professores atenciosos, e as máquinas maravilhosas. Venham que ela mostrará por si só…",
     nota: 5,
   },
   {
     id: "ricardo",
+    perfil: "Local Guide · 82 avaliações",
+    quando: "out. 2026",
     nome: "Ricardo Patrício Oliveira",
     texto: "Melhor academia do interior de SP, saiu de Limeira para aproveitar essa estrutura top, professores super técnicos.",
     nota: 5,
   },
   {
     id: "michael-parra",
+    perfil: "4 avaliações",
+    quando: "out. 2026",
     nome: "Michael Parra",
     texto: "Estou muito satisfeito com a academia! Os professores são extremamente dedicados, atenciosos e demonstram verdadeiro compromisso em ajudar os alunos. Os aparelhos são incríveis, de uma qualidade que eu nunca tinha visto antes…",
     nota: 5,
   },
   {
     id: "rafaela",
+    perfil: "7 avaliações · 6 fotos",
+    quando: "out. 2026",
     nome: "Rafaela Valensuela",
     texto: "Amo a academia. Super inovadora, tecnológica, me sinto super protegida lá dentro. Ambiente completamente acolhedor e pronto para os alunos!! Recomendo muito a academia! Tudo impecável!!",
     nota: 5,
   },
   {
     id: "erick",
+    perfil: "1 avaliação",
+    quando: "out. 2026",
     nome: "Erick Riesterer",
     texto: "Fui muito bem recebido, tratado com muita atenção e cordialidade, além de encontrar uma estrutura excelente. Recomendo muito!",
     nota: 5,
   },
   {
     id: "vanessa",
+    perfil: "Local Guide · 38 avaliações",
+    quando: "out. 2026",
     nome: "Vanessa Sato",
     texto: "Uma academia simplesmente maravilhosa! Um ambiente que une qualidade, conforto e motivação, perfeito para quem busca saúde, bem-estar e superação a cada treino!",
     nota: 5,
   },
   {
     id: "nicolas",
+    perfil: "1 avaliação",
+    quando: "out. 2026",
     nome: "Nicolas Nogueira",
     texto: "Melhor academia que já treinei, muito equipada, só equipamento de melhor qualidade, parabéns.",
     nota: 5,
   },
   {
     id: "michael-hadlei",
+    perfil: "1 avaliação",
+    quando: "out. 2026",
     nome: "Michael Hadlei",
     texto: "Excelente academia, recomendo muito. Excelente atendimento das meninas da recepção, muito atenciosas, educadas e prestativas. Nota 10, melhor academia que já frequentei…",
     nota: 5,
@@ -492,7 +512,7 @@ export const faq: { q: string; a: string | Todo }[] = [
   },
   {
     q: "Quanto custa?",
-    a: "Plano Mensal: R$ 170 por mês. Plano Anual: R$ 149 por mês (no plano de 12 meses). Diária avulsa: R$ 39,90. Também aceitamos Wellhub (Silver+) e TotalPass (TP2+).",
+    a: "Plano Zero Um: R$ 170 por mês no mensal ou R$ 149 por mês no anual (12 meses). Diária avulsa: R$ 39,90. Também aceitamos Wellhub (Silver+) e TotalPass (TP2+).",
   },
   { q: "Tem professor de madrugada?", a: { todo: "Confirmar se há professor no salão na madrugada" } },
   {
