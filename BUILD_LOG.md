@@ -278,3 +278,12 @@ Os dois ficam em `formasDeTreinar` (`src/content/zeroum.ts`, marcados com `PRECO
 - **Avaliações** (`components/ui/review-card.tsx`): layout de "tweet card" (ref. @tom_ui) com identidade do Google: logo G, estrelas, selo Local Guide, linha do perfil e mês, em mosaico com entrada em cascata e card-resumo "4,9 · 181 avaliações".
 - **Como começar** (`sections/ComoComecar.tsx`): celular 3D feito em CSS (sem imagem) que endireita com o scroll (spring); na tela, uma conversa **ilustrativa** de WhatsApp no tema da marca ("digitando…", respostas e card de localização). Tudo com informações reais (24h, diária, endereço). Legenda "Conversa ilustrativa". Selos flutuantes; reduced-motion mostra a pose final e a conversa completa.
 - Dependências novas: `motion`, `@number-flow/react` e `canvas-confetti` (este último carregado só ao clicar no toggle). O JS da home subiu cerca de 56 KB gzip; Lighthouse mobile da home ficou em 84–85 (uma execução fora da curva deu 65). Acessibilidade, boas práticas e SEO seguem em 100; CLS 0.
+
+---
+
+## 12. Celular real + cena "Zero Um em números" (05/11/2026)
+
+- **Celular:** o mockup enviado (iPhone dourado com fundo azul) foi ampliado 2x (EDSR), recortado com chroma key (alpha suave + remoção do azul que vazava nas bordas) e salvo como `public/brand/phone-mockup.png`. A conversa (HTML) é encaixada na tela inclinada por **homografia** (`lib/homography.ts` → `matrix3d`), então segue a perspectiva real do aparelho. Transições pelo scroll (spring): o celular entra girado (−28°) e endireita, o "01" gigante sobe e cresce em outro ritmo (profundidade), os selos entram de lados diferentes, a sombra no chão cresce e, depois de assentar, o aparelho flutua devagar.
+- **Zero Um em números** (`sections/NumerosImpacto.tsx`, substitui o CtaFinal na home): cena presa na tela (sticky, 360vh). A foto do letreiro abre de card para tela cheia (clip-path), e **24h → 2.500 m² → 230 máquinas** entram um por vez, contando, com blur e deslocamento e barra de progresso em 3 partes. Termina em "Vem conhecer a maior academia de Americana" com os CTAs.
+- Reduced motion: as duas versões estão no HTML e o CSS escolhe qual mostrar (sem erro de hidratação); a conversa já aparece completa.
+- Lighthouse mobile da home: 83–85 · A11y/BP/SEO 100 · CLS 0.

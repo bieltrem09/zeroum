@@ -5,7 +5,7 @@ import { Horarios24 } from "@/components/sections/Horarios24";
 import { Planos } from "@/components/sections/Planos";
 import { Depoimentos } from "@/components/sections/Depoimentos";
 import { ComoComecar } from "@/components/sections/ComoComecar";
-import { CtaFinal } from "@/components/sections/CtaFinal";
+import { NumerosImpacto } from "@/components/sections/NumerosImpacto";
 import { Localizacao } from "@/components/sections/Localizacao";
 import { Faq } from "@/components/sections/Faq";
 
@@ -23,7 +23,7 @@ export default function Home() {
       <Planos label="05" />
       <Depoimentos label="06" />
       <ComoComecar />
-      <CtaFinal />
+      <NumerosImpacto />
       <Localizacao label="09" />
       <Faq label="10" />
     </>

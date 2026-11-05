@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { LazyMotion, domAnimation, m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { ArrowLeft, CheckCheck, MapPin, Mic, Phone, Video } from "lucide-react";
 import { zeroum } from "@/content/zeroum";
 import { WA_AULA } from "@/lib/whatsapp";
 import { useNow } from "@/lib/useNow";
+import { growQuad, rectToQuad } from "@/lib/homography";
 import { SectionLabel } from "@/components/ui/SectionHead";
 
 type Msg = { from: "me" | "zu"; text?: string; card?: boolean; time: string };
@@ -142,6 +143,51 @@ function PhoneScreen({ shown, typing }: { shown: number; typing: boolean }) {
 
 /* ------------------------------------------------------------------ */
 
+/** Mockup real (iPhone dourado, recortado do fundo azul e ampliado 2x). Tela em coordenadas do PNG. */
+const FRAME = { w: 1174, h: 1853, quad: [[107, 60], [629, 56], [1131, 1643], [632, 1759]] as [number, number][] };
+const SCREEN = { w: 280, h: 606 }; // proporção de tela de iPhone (≈ 0,46)
+
+/**
+ * Encaixa a conversa (HTML) na tela inclinada do mockup com uma homografia (matrix3d):
+ * o conteúdo segue a perspectiva real do aparelho. A moldura PNG fica por cima e "corta" os cantos.
+ */
+function PhoneMockup({ shown, typing }: { shown: number; typing: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [matrix, setMatrix] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const update = () => {
+      const k = el.clientWidth / FRAME.w;
+      const q = growQuad(FRAME.quad.map(([x, y]) => [x * k, y * k]) as [[number, number], [number, number], [number, number], [number, number]], 0.012);
+      setMatrix(rectToQuad(SCREEN.w, SCREEN.h, q));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div ref={box} className="relative aspect-[1174/1853] w-[min(74vw,400px)]">
+      {/* tela (abaixo da moldura) */}
+      <div
+        className="absolute left-0 top-0 overflow-hidden bg-[#0b0b0b]"
+        style={{ width: SCREEN.w, height: SCREEN.h, transformOrigin: "0 0", transform: matrix ?? "scale(0)", visibility: matrix ? "visible" : "hidden" }}
+        aria-hidden="true"
+      >
+        <PhoneScreen shown={shown} typing={typing} />
+        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgb(255_255_255/0.14)_0%,transparent_30%,transparent_70%,rgb(255_255_255/0.05)_100%)]" />
+      </div>
+      {/* moldura real por cima */}
+      <Image src="/brand/phone-mockup.png" alt="" fill sizes="400px" className="pointer-events-none select-none object-contain drop-shadow-[0_50px_60px_rgb(0_0_0/0.55)]" priority={false} />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
 /**
  * 07 · COMO COMEÇAR — celular 3D (inspirado no hero do app da Smart Fit), mas com o que é real
  * na Zero Um: o começo é pelo WhatsApp. O celular endireita conforme o scroll (spring) e a
@@ -151,16 +197,20 @@ export function ComoComecar() {
   const stage = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const inView = useInView(stage, { once: true, amount: 0.45 });
-  const [shown, setShown] = useState(reduce ? conversa.length : 0);
+  // Começa com a conversa inteira (igual no servidor e no navegador); a animação zera e repete ao entrar.
+  const [shown, setShown] = useState(conversa.length);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const animate = mounted && !reduce;
   const [typing, setTyping] = useState(false);
 
   // Conversa em sequência: "digitando…" antes das respostas da Zero Um.
   useEffect(() => {
-    if (reduce) {
-      setShown(conversa.length);
+    if (!animate) return;
+    if (!inView) {
+      setShown(0);
       return;
     }
-    if (!inView) return;
     let cancelled = false;
     const timers: ReturnType<typeof setTimeout>[] = [];
     let t = 500;
@@ -182,16 +232,25 @@ export function ComoComecar() {
       cancelled = true;
       timers.forEach(clearTimeout);
     };
-  }, [inView, reduce]);
+  }, [inView, animate]);
 
-  // Inclinação ligada ao scroll (mola para suavizar).
+  // Transições ligadas ao scroll (mola para suavizar): celular endireita, "01" sobe, selos em paralaxe.
   const { scrollYProgress } = useScroll({ target: stage, offset: ["start end", "center center"] });
-  const p = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.6 });
-  const rotateX = useTransform(p, [0, 1], [38, 8]);
-  const rotateY = useTransform(p, [0, 1], [-28, -12]);
-  const rotateZ = useTransform(p, [0, 1], [16, -6]);
-  const y = useTransform(p, [0, 1], [140, 0]);
-  const scale = useTransform(p, [0, 1], [0.86, 1]);
+  const p = useSpring(scrollYProgress, { stiffness: 110, damping: 22, mass: 0.6 });
+  const rotateZ = useTransform(p, [0, 1], [-28, 0]);
+  const rotateX = useTransform(p, [0, 1], [30, 0]);
+  const y = useTransform(p, [0, 1], [220, 0]);
+  const scale = useTransform(p, [0, 1], [0.78, 1]);
+  const phoneOpacity = useTransform(p, [0, 0.35], [0, 1]);
+  const shadowScale = useTransform(p, [0, 1], [0.4, 1]);
+  const shadowOpacity = useTransform(p, [0, 1], [0, 0.7]);
+  const bigY = useTransform(p, [0, 1], [180, 0]);
+  const bigScale = useTransform(p, [0, 1], [0.7, 1]);
+  const bigOpacity = useTransform(p, [0, 1], [0, 1]);
+  const chipA = useTransform(p, [0, 1], [-120, 0]);
+  const chipB = useTransform(p, [0, 1], [160, 0]);
+  const chipC = useTransform(p, [0, 1], [90, 0]);
+  const chipOpacity = useTransform(p, [0.45, 0.9], [0, 1]);
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -235,49 +294,50 @@ export function ComoComecar() {
               ref={stage}
               className="relative grid min-h-[640px] place-items-center overflow-hidden rounded-[var(--radius-photo)] bg-[radial-gradient(120%_90%_at_50%_10%,#e3182d_0%,#9e0f1f_38%,#2a0a0e_70%,#0b0b0b_100%)] py-16 [perspective:1600px] md:min-h-[760px]"
             >
-              {/* "01" gigante ao fundo */}
-              <span className="display pointer-events-none absolute -bottom-[0.12em] left-1/2 -translate-x-1/2 select-none text-[clamp(14rem,40vw,30rem)] leading-none text-black/25" aria-hidden="true">
+              {/* "01" gigante ao fundo: sobe e cresce em ritmo diferente do celular (profundidade) */}
+              <m.span
+                style={!animate ? undefined : { y: bigY, scale: bigScale, opacity: bigOpacity }}
+                className="display pointer-events-none absolute bottom-[-0.14em] left-1/2 -translate-x-1/2 select-none text-[clamp(14rem,42vw,32rem)] leading-none text-black/30"
+                aria-hidden="true"
+              >
                 01
-              </span>
+              </m.span>
 
-              {/* selos flutuando */}
+              {/* selos: entram de lados diferentes, cada um com sua profundidade */}
               {[
-                { t: "Aberto 24h", c: "left-[6%] top-[14%]", d: 0 },
-                { t: "Diária R$ 39,90", c: "right-[6%] top-[30%]", d: 0.8 },
-                { t: "Resposta rápida", c: "left-[8%] bottom-[18%]", d: 1.6 },
+                { t: "Aberto 24h", c: "left-[5%] top-[12%]", x: chipA, d: 0 },
+                { t: "Diária R$ 39,90", c: "right-[5%] top-[28%]", x: chipB, d: 0.8 },
+                { t: "Resposta rápida", c: "left-[7%] bottom-[16%]", x: chipC, d: 1.6 },
               ].map((chip) => (
-                <span
+                <m.span
                   key={chip.t}
-                  className={`float-chip pill absolute z-20 hidden bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur-sm sm:inline-flex ${chip.c}`}
-                  style={{ animationDelay: `${chip.d}s` }}
+                  style={!animate ? undefined : { x: chip.x, opacity: chipOpacity }}
+                  className={`absolute z-20 hidden sm:block ${chip.c}`}
                   aria-hidden="true"
                 >
-                  <span className="size-1.5 rounded-full bg-red-bright" />
-                  {chip.t}
-                </span>
+                  <span className="float-chip pill inline-flex bg-black/75 px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgb(0_0_0/0.35)] backdrop-blur-sm" style={{ animationDelay: `${chip.d}s` }}>
+                    <span className="size-1.5 rounded-full bg-red-bright" />
+                    {chip.t}
+                  </span>
+                </m.span>
               ))}
 
-              {/* Celular */}
+              {/* sombra no "chão" */}
+              <m.span
+                style={!animate ? undefined : { scale: shadowScale, opacity: shadowOpacity }}
+                className="pointer-events-none absolute bottom-[7%] left-1/2 h-10 w-[46%] -translate-x-1/2 rounded-[50%] bg-black blur-2xl"
+                aria-hidden="true"
+              />
+
+              {/* Celular (mockup real) */}
               <m.div
-                style={reduce ? { rotateX: 8, rotateY: -12, rotateZ: -6 } : { rotateX, rotateY, rotateZ, y, scale }}
+                style={!animate ? undefined : { rotateZ, rotateX, y, scale, opacity: phoneOpacity }}
                 className="relative z-10 [transform-style:preserve-3d]"
+                role="img"
+                aria-label="Celular mostrando uma conversa ilustrativa no WhatsApp com a Zero Um: pergunta sobre horário, valor da diária e agendamento da aula experimental."
               >
-                <div
-                  className="relative h-[540px] w-[264px] rounded-[46px] bg-[linear-gradient(145deg,#3a3a3a,#111_45%,#2b2b2b)] p-[9px] shadow-[0_60px_120px_-30px_rgb(0_0_0/0.85),inset_0_0_0_1px_rgb(255_255_255/0.12)] md:h-[600px] md:w-[292px]"
-                  role="img"
-                  aria-label="Celular mostrando uma conversa ilustrativa no WhatsApp com a Zero Um: pergunta sobre horário, valor da diária e agendamento da aula experimental."
-                >
-                  {/* botões laterais */}
-                  <span className="absolute -left-[3px] top-28 h-8 w-[3px] rounded-l bg-[#2b2b2b]" aria-hidden="true" />
-                  <span className="absolute -left-[3px] top-40 h-14 w-[3px] rounded-l bg-[#2b2b2b]" aria-hidden="true" />
-                  <span className="absolute -right-[3px] top-36 h-20 w-[3px] rounded-r bg-[#2b2b2b]" aria-hidden="true" />
-                  {/* tela */}
-                  <div className="relative h-full w-full overflow-hidden rounded-[38px]" aria-hidden="true">
-                    <span className="absolute left-1/2 top-2.5 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
-                    <PhoneScreen shown={shown} typing={typing} />
-                    {/* reflexo do vidro */}
-                    <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgb(255_255_255/0.10)_0%,transparent_28%)]" />
-                  </div>
+                <div className="phone-idle">
+                  <PhoneMockup shown={shown} typing={typing} />
                 </div>
               </m.div>
             </div>
