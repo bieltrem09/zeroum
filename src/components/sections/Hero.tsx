@@ -14,6 +14,9 @@ export function Hero() {
   const athlete = media["hero-athlete-f"];
 
   return (
+    // O wrapper é do React: o GSAP (pin) envolve a <section> num "pin-spacer"; sem este div,
+    // ao trocar de página o React tentaria remover a section do <main> e quebraria (removeChild).
+    <div className="relative">
     <section aria-labelledby="hero-title" className="relative p-3" data-fx="hero-parallax">
       <div className="hero-frame relative isolate flex h-[92svh] max-h-[1080px] min-h-[600px] flex-col overflow-hidden rounded-[var(--radius-photo)] bg-carbon">
         {/* Camada 1 · foto (super-resolução 2x, qualidade 85) */}
@@ -83,5 +86,6 @@ export function Hero() {
         </div>
       </div>
     </section>
+    </div>
   );
 }

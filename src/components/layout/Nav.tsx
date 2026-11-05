@@ -153,7 +153,7 @@ export function Nav() {
                 Início
               </Link>
             </li>
-            {navLinks.map((l, i) => (
+            {navLinks.map((l) => (
               <li key={l.href} className="hairline border-b">
                 <Link
                   href={l.href}
@@ -162,7 +162,6 @@ export function Nav() {
                   className="display flex items-baseline justify-between py-3 text-[clamp(2.75rem,13vw,4.5rem)] aria-[current=page]:text-red"
                 >
                   {l.label}
-                  <span className="label text-gray-300">0{i + 1}</span>
                 </Link>
               </li>
             ))}

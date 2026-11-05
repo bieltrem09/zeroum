@@ -54,8 +54,12 @@ export const zeroum = {
   referenciaLocal: "Perto da Rodoviária de Americana", // confirmar
   descricao:
     "Academia especializada em musculação, com estrutura completa, equipamentos de qualidade e acompanhamento profissional. Para ganhar massa muscular, emagrecer ou melhorar a qualidade de vida, com segurança e dedicação.",
-  slogan: "A maior academia de Americana", // usado pela própria academia no post oficial de estrutura
-  sloganConfirmado: true,
+  slogan: "A maior academia de Americana", // aparece em post da própria academia
+  /**
+   * ⚠️ Só ligue (true) depois que o DONO confirmar que pode afirmar "a maior academia de Americana".
+   * Desligado: o site usa textos neutros ("Estrutura de 2.500 m² em Americana", "Vem conhecer a Zero Um").
+   */
+  sloganConfirmado: false,
   site: "https://zeroum-academia.vercel.app", // trocar pelo domínio próprio quando houver
 
   // ---- PREENCHER (não inventar) ----
@@ -84,7 +88,7 @@ export const pilares = [
   {
     nome: "Estrutura",
     dado: "2.500 m²",
-    frase: "A maior academia de Americana: peso livre, máquinas, Glúteo Zone e Sala Recovery debaixo do mesmo teto.",
+    frase: "Peso livre, máquinas, Glúteo Zone e Sala Recovery debaixo do mesmo teto.",
   },
   {
     nome: "Performance",
@@ -381,72 +385,65 @@ export type Depoimento = {
   quando?: string;
 };
 /**
- * Avaliações públicas reais do perfil da Zero Um CT no Google (nov/2026), nota 5.
- * Textos transcritos como estão; trechos cortados pelo Google terminam em "…"; emojis removidos.
+ * Avaliações públicas reais do perfil da Zero Um CT no Google (capturas de 03/11/2026), todas nota 5.
+ * Texto exatamente como aparece no Google (inclusive pontuação); "…" = o Google corta ali; só os emojis foram removidos.
+ * Sem data: o Google mostra "2 semanas atrás" (relativa), e não há data exata.
  */
 export const depoimentos: Depoimento[] = [
   {
     id: "nicolly",
-    perfil: "2 avaliações · 5 fotos",
-    quando: "out. 2026",
     nome: "Nicolly Đianna",
-    texto: "Academia top. Atendimento, agilidade no balcão, professores atenciosos, e as máquinas maravilhosas. Venham que ela mostrará por si só…",
+    perfil: "2 avaliações · 5 fotos",
+    texto: "Academia top. Atendimento, agilidade no balcão, professores atenciosos, e as máquinas maravilhosas Venham que ela mostrará por si só …",
     nota: 5,
   },
   {
     id: "ricardo",
-    perfil: "Local Guide · 82 avaliações",
-    quando: "out. 2026",
     nome: "Ricardo Patrício Oliveira",
-    texto: "Melhor academia do interior de SP, saiu de Limeira para aproveitar essa estrutura top, professores super técnicos.",
+    perfil: "Local Guide · 82 avaliações · 220 fotos",
+    texto: "Melhor academia do interior de SP, saiu de Limeira para aproveitar essa estrutura top, professores super técnicos",
     nota: 5,
   },
   {
     id: "michael-parra",
-    perfil: "4 avaliações",
-    quando: "out. 2026",
     nome: "Michael Parra",
-    texto: "Estou muito satisfeito com a academia! Os professores são extremamente dedicados, atenciosos e demonstram verdadeiro compromisso em ajudar os alunos. Os aparelhos são incríveis, de uma qualidade que eu nunca tinha visto antes…",
+    perfil: "4 avaliações",
+    texto: "Estou muito satisfeito com a academia! Os professores são extremamente dedicados, atenciosos e demonstram verdadeiro compromisso em ajudar os alunos. Os aparelhos são incríveis, de uma qualidade que eu nunca tinha visto antes, …",
     nota: 5,
   },
   {
     id: "rafaela",
-    perfil: "7 avaliações · 6 fotos",
-    quando: "out. 2026",
     nome: "Rafaela Valensuela",
-    texto: "Amo a academia. Super inovadora, tecnológica, me sinto super protegida lá dentro. Ambiente completamente acolhedor e pronto para os alunos!! Recomendo muito a academia! Tudo impecável!!",
+    perfil: "7 avaliações · 6 fotos",
+    texto: "Amo a academia. Super inovadora, tecnológica, me sinto super protegida la dentro. Ambiente completamente acolhedor e pronto para os alunos!! Recomendo muito a academia! Tudo impecável!! …",
     nota: 5,
   },
   {
     id: "erick",
-    perfil: "1 avaliação",
-    quando: "out. 2026",
     nome: "Erick Riesterer",
-    texto: "Fui muito bem recebido, tratado com muita atenção e cordialidade, além de encontrar uma estrutura excelente. Recomendo muito!",
+    perfil: "1 avaliação",
+    texto: "Fui muito bem recebido, tratado com muita atenção e cordialidade, além de encontrar uma estrutura excelente. Recomendo muito! Deixo um elogio especial à equipe da recepção do período da tarde …",
     nota: 5,
   },
   {
     id: "vanessa",
-    perfil: "Local Guide · 38 avaliações",
-    quando: "out. 2026",
-    nome: "Vanessa Sato",
-    texto: "Uma academia simplesmente maravilhosa! Um ambiente que une qualidade, conforto e motivação, perfeito para quem busca saúde, bem-estar e superação a cada treino!",
+    nome: "Vanessa sato",
+    perfil: "Local Guide · 38 avaliações · 1 foto",
+    texto: "Uma academia simplesmente maravilhosa! Um ambiente que une qualidade, conforto e motivação, perfeito para quem busca saúde, bem-estar e superação a cada treino! …",
     nota: 5,
   },
   {
     id: "nicolas",
-    perfil: "1 avaliação",
-    quando: "out. 2026",
     nome: "Nicolas Nogueira",
-    texto: "Melhor academia que já treinei, muito equipada, só equipamento de melhor qualidade, parabéns.",
+    perfil: "1 avaliação",
+    texto: "Melhor academia que já treinei, muito equipada só equipamento de melhor qualidade, parabéns. …",
     nota: 5,
   },
   {
     id: "michael-hadlei",
-    perfil: "1 avaliação",
-    quando: "out. 2026",
     nome: "Michael Hadlei",
-    texto: "Excelente academia, recomendo muito. Excelente atendimento das meninas da recepção, muito atenciosas, educadas e prestativas. Nota 10, melhor academia que já frequentei…",
+    perfil: "1 avaliação",
+    texto: "Excelente academia recomendo muito excelente atendimento das meninas da recepção muito atenciosas a Yasmin e Lorraine educadas e muito atenciosas e prestativas nota 10 melhor academia que já frequentei …",
     nota: 5,
   },
 ];
@@ -537,3 +534,16 @@ export const faq: { q: string; a: string | Todo }[] = [
 
 export const objetivos = ["Hipertrofia", "Emagrecimento", "Saúde", "Começando agora"] as const;
 export const turnosPreferidos = ["Manhã", "Tarde", "Noite", "Madrugada"] as const;
+
+/* ------------------------------------------------------------------ */
+/* Frases que dependem da confirmação do slogan                        */
+/* ------------------------------------------------------------------ */
+const MAIOR = zeroum.sloganConfirmado;
+export const frases = {
+  /** "A maior academia de Americana" ou "Estrutura de 2.500 m² em Americana" */
+  destaque: MAIOR ? "A maior academia de Americana" : "Estrutura de 2.500 m² em Americana",
+  /** CTA final: parte normal + parte em vermelho */
+  convite: MAIOR ? { antes: "Vem conhecer a ", red: "maior academia", depois: " de Americana." } : { antes: "Vem conhecer a ", red: "Zero Um", depois: " em Americana." },
+  conviteTexto: MAIOR ? "Vem conhecer a maior academia de Americana." : "Vem conhecer a Zero Um em Americana.",
+  sobreEstrutura: MAIOR ? "A maior academia de Americana, debaixo de um teto só." : "Peso livre, máquinas e recuperação debaixo de um teto só.",
+};

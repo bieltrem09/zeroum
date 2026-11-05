@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ambientes, avaliacaoGoogle, falamDaEquipe, pilares, zeroum } from "@/content/zeroum";
+import { ambientes, avaliacaoGoogle, falamDaEquipe, frases, pilares, zeroum } from "@/content/zeroum";
 import { pageMeta } from "@/lib/seo";
 import { WA_GERAL } from "@/lib/whatsapp";
 import { PageHero } from "@/components/sections/PageHero";
@@ -34,7 +34,7 @@ export default function SobrePage() {
           <div className="min-w-0 lg:col-span-6">
             <SectionLabel n="02">Quem somos</SectionLabel>
             <h2 id="quem-title" className="title mt-4 text-[clamp(1.75rem,3vw,2.5rem)]">
-              A maior academia de Americana, feita para quem leva o treino a sério.
+              {frases.destaque}, feita para quem leva o treino a sério.
             </h2>
             <div className="mt-6 space-y-4 text-lg text-gray-300">
               <p>

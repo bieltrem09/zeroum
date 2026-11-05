@@ -287,3 +287,14 @@ Os dois ficam em `formasDeTreinar` (`src/content/zeroum.ts`, marcados com `PRECO
 - **Zero Um em números** (`sections/NumerosImpacto.tsx`, substitui o CtaFinal na home): cena presa na tela (sticky, 360vh). A foto do letreiro abre de card para tela cheia (clip-path), e **24h → 2.500 m² → 230 máquinas** entram um por vez, contando, com blur e deslocamento e barra de progresso em 3 partes. Termina em "Vem conhecer a maior academia de Americana" com os CTAs.
 - Reduced motion: as duas versões estão no HTML e o CSS escolhe qual mostrar (sem erro de hidratação); a conversa já aparece completa.
 - Lighthouse mobile da home: 83–85 · A11y/BP/SEO 100 · CLS 0.
+
+---
+
+## 13. Revisão final (05/11/2026)
+
+1. **Números da cena "Zero Um em números":** o contador saía do zero no HTML do servidor, então sem JS, para robôs e leitores de tela aparecia "0h, 0 m², 0". Agora o valor final é o padrão e a contagem só acontece durante a entrada de cada número. Verificado no iPhone (emulado): 24 → 2.500 → 230.
+2. **Números no menu:** os "01, 02…" ao lado dos links do menu mobile foram removidos (eram decorativos e grudavam no texto: "Sobre nós01").
+3. **Avaliações:** conferidas uma a uma contra as capturas do Google enviadas pelo responsável (03/11/2026): 8 avaliações reais, nota 4,9, 181 avaliações. Correções: textos agora idênticos ao Google (antes havia pontuação ajustada e nomes da equipe omitidos); a data "out. 2026" foi removida porque era uma estimativa (o Google mostra "2 semanas atrás"); nome "Vanessa sato" como no Google.
+4. **"A maior academia de Americana":** controlado por `sloganConfirmado` em `zeroum.ts`, agora **false**; o site usa textos neutros até o dono confirmar.
+5. **WhatsApp (19) 99620-9541:** número tirado do Google/Instagram da academia; precisa da confirmação do dono de que é o número que atende os alunos.
+6. **Aula experimental:** havia um **bug grave**: qualquer navegação interna saindo da home quebrava a página ("This page couldn't load", erro `removeChild`), porque o pin do GSAP envolvia a `<section>` do hero. Corrigido com um wrapper do React. Testado da home para todas as páginas (desktop e iPhone) e o formulário até o link do WhatsApp com a mensagem pronta.

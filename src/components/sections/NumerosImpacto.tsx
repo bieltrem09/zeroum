@@ -4,13 +4,13 @@ import Link from "next/link";
 import { useRef } from "react";
 import { LazyMotion, domAnimation, m, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { Media } from "@/components/ui/Media";
-import { zeroum } from "@/content/zeroum";
+import { frases, zeroum } from "@/content/zeroum";
 import { WA_AULA } from "@/lib/whatsapp";
 
 type Stat = { n: number; unit: string; label: string; sub: string };
 const stats: Stat[] = [
   { n: 24, unit: "h", label: "Aberta", sub: "Todos os dias. Madrugada, manhã, tarde e noite." },
-  { n: 2500, unit: "m²", label: "De estrutura", sub: "A maior academia de Americana, debaixo de um teto só." },
+  { n: 2500, unit: "m²", label: "De estrutura", sub: frases.sobreEstrutura },
   { n: zeroum.maquinas, unit: "", label: "Máquinas", sub: `De ${zeroum.marcas} marcas diferentes, para treinar cada músculo do jeito certo.` },
 ];
 
@@ -27,8 +27,15 @@ function StatSlide({ stat, i, p }: { stat: Stat; i: number; p: MotionValue<numbe
   const opacity = useTransform(p, [a, a + fade, b - fade, b], [0, 1, 1, i === 2 ? 0 : 0]);
   const y = useTransform(p, [a, a + fade * 2, b - fade, b], [90, 0, 0, -90]);
   const blur = useTransform(p, [a, a + fade, b - fade, b], ["blur(12px)", "blur(0px)", "blur(0px)", "blur(12px)"]);
-  const count = useTransform(p, [a, a + (b - a) * 0.4], [0, stat.n], { clamp: true });
-  const text = useTransform(count, (v) => Math.round(v).toLocaleString("pt-BR"));
+  // Valor final sempre que o slide não está entrando (SSR, sem JS, leitores de tela, rolagem rápida):
+  // só conta de 0 → valor durante a entrada, quando o slide já está aparecendo. Nunca fica travado em 0.
+  const final = stat.n.toLocaleString("pt-BR");
+  const end = a + (b - a) * 0.35;
+  const text = useTransform(p, (v) => {
+    if (v <= a || v >= end) return final;
+    const k = (v - a) / (end - a);
+    return Math.round(stat.n * (1 - Math.pow(1 - k, 3))).toLocaleString("pt-BR");
+  });
 
   return (
     <m.div style={{ opacity, y, filter: blur }} className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
@@ -68,7 +75,9 @@ function Estatico() {
     <section aria-labelledby="numeros-title-static" className="relative z-10 bg-black py-24">
       <div className="container-site">
         <h2 id="numeros-title-static" className="display text-section">
-          Vem conhecer a <span className="text-red">maior academia de Americana.</span>
+          {frases.convite.antes}
+          <span className="text-red">{frases.convite.red}</span>
+          {frases.convite.depois}
         </h2>
         <ul className="mt-12 grid gap-3 md:grid-cols-3">
           {stats.map((s) => (
@@ -147,7 +156,9 @@ export function NumerosImpacto() {
           {/* Fechamento */}
           <m.div style={{ opacity: endOpacity, y: endY }} className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center">
             <h2 id="numeros-title" className="display max-w-5xl text-[clamp(3rem,8vw,7.5rem)] leading-[1.02]">
-              Vem conhecer a <span className="text-red">maior academia</span> de Americana.
+              {frases.convite.antes}
+              <span className="text-red">{frases.convite.red}</span>
+              {frases.convite.depois}
             </h2>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link href="/aula-experimental" className="btn btn-red">

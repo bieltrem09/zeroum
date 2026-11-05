@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ambientes } from "@/content/zeroum";
+import { ambientes, frases } from "@/content/zeroum";
 import { media } from "@/content/media";
 import { Media } from "@/components/ui/Media";
 import { SectionLabel } from "@/components/ui/SectionHead";
@@ -26,7 +26,7 @@ export function EstruturaScroller() {
           </h2>
         </div>
         <p className="max-w-md text-gray-300 md:col-span-4 md:col-start-9">
-          A maior academia de Americana: 230 máquinas de 10 marcas, peso livre, Glúteo Zone, Sala Recovery e máquina de gelo. Um tour pelo que você encontra quando passa pela catraca.
+          {frases.destaque}: 230 máquinas de 10 marcas, peso livre, Glúteo Zone, Sala Recovery e máquina de gelo. Um tour pelo que você encontra quando passa pela catraca.
         </p>
       </div>
 
