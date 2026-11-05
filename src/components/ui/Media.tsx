@@ -12,12 +12,14 @@ type Props = {
   imgClassName?: string;
   /** Esconde a etiqueta do placeholder (quando há texto por cima). */
   hideLabel?: boolean;
+  /** Qualidade do next/image (75 padrão; 85 para a foto do hero). */
+  quality?: 75 | 85;
 };
 
 /**
  * Foto real (next/image → AVIF/WebP, srcset) ou placeholder na proporção exata do slot.
  */
-export function Media({ slot, className = "", sizes = "100vw", priority, keepRatio = true, rounded = true, imgClassName = "", hideLabel = false }: Props) {
+export function Media({ slot, className = "", sizes = "100vw", priority, keepRatio = true, rounded = true, imgClassName = "", hideLabel = false, quality }: Props) {
   const s = media[slot];
   if (!s) throw new Error(`Slot de imagem desconhecido: ${slot}`);
   const style = keepRatio ? { aspectRatio: String(s.ratio) } : undefined;
@@ -32,6 +34,7 @@ export function Media({ slot, className = "", sizes = "100vw", priority, keepRat
           fill
           sizes={sizes}
           priority={priority}
+          quality={quality}
           fetchPriority={priority ? "high" : undefined}
           className={`object-cover ${imgClassName}`}
           style={s.position ? { objectPosition: s.position } : undefined}

@@ -1,68 +1,55 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
 import { Wordmark } from "@/components/brand/Logo";
 import { Media } from "@/components/ui/Media";
 import { media } from "@/content/media";
 import { zeroum } from "@/content/zeroum";
-import { HeroClock } from "./HeroClock";
 
 /**
- * 01 · HERO — momento de assinatura #1: logo gigante ATRÁS do atleta e NA FRENTE do fundo.
- * Camadas: [fundo] → [ZEROUM] → [recorte do atleta] → [gradiente] → [conteúdo].
- *
- * Intro em CSS puro (globals.css → "Hero intro"): começa no primeiro paint, roda fora da
- * main thread e não depende do JS (emil/animate: "CSS animations beat JS under load").
- * Texto do hero só usa transform (sem opacity 0) → não atrasa o LCP.
- * Parallax + pin no scroll: data-fx="hero-parallax" (ScrollFx, carregado no idle).
+ * 01 · HERO
+ * Camadas: [foto] → [ZEROUM discreto no topo] → [recorte do atleta, se houver] → [gradientes] → [conteúdo embaixo].
+ * Sem chips no topo: a foto respira e a mensagem fica toda embaixo à esquerda (título + texto + CTAs).
+ * Intro em CSS puro (globals.css → "Hero intro"); parallax/pin via data-fx="hero-parallax".
  */
 export function Hero() {
   const athlete = media["hero-athlete-f"];
 
   return (
     <section aria-labelledby="hero-title" className="relative p-3" data-fx="hero-parallax">
-      <div className="hero-frame relative isolate flex h-[92svh] max-h-[1080px] min-h-[640px] flex-col overflow-hidden rounded-[var(--radius-photo)] bg-carbon">
-        {/* Camada 1 · fundo */}
+      <div className="hero-frame relative isolate flex h-[92svh] max-h-[1080px] min-h-[600px] flex-col overflow-hidden rounded-[var(--radius-photo)] bg-carbon">
+        {/* Camada 1 · foto (super-resolução 2x, qualidade 85) */}
         <div className="absolute inset-0 -z-30" data-fx-bg>
           <div className="hero-bg h-full w-full">
-            <Media slot="hero-bg" priority keepRatio={false} rounded={false} hideLabel className="h-full w-full" sizes="100vw" />
+            <Media slot="hero-bg" priority quality={85} keepRatio={false} rounded={false} hideLabel className="h-full w-full" sizes="100vw" />
           </div>
         </div>
 
-        {/* Camada 2 · ZEROUM gigante */}
-        <div className="hero-wordmark pointer-events-none absolute inset-x-[4%] top-[calc(var(--nav-h)+4.25rem)] -z-20 overflow-hidden md:top-[calc(var(--nav-h)+5rem)]" data-fx-mark>
-          <Wordmark className="w-full text-white/90" />
+        {/* Camada 2 · ZEROUM gigante "gravado" no piso, saindo pela borda de baixo:
+            assina a marca sem brigar com o teto iluminado nem com o título */}
+        <div
+          className="hero-wordmark pointer-events-none absolute inset-x-[2%] -bottom-[3.2vw] -z-[4] opacity-[0.09]"
+          data-fx-mark
+        >
+          <Wordmark className="w-full text-white" />
         </div>
 
-        {/* Camada 3 · recorte do atleta (por cima do logo) */}
-        <div className="hero-athlete absolute bottom-0 right-[4%] -z-10 aspect-[4/5] h-[62%] md:right-[10%] md:h-[80%]">
-          {athlete.src && (
+        {/* Camada 3 · recorte do atleta (só quando houver o PNG real) */}
+        {athlete.src && (
+          <div className="hero-athlete absolute bottom-0 right-[4%] -z-10 aspect-[4/5] h-[62%] md:right-[10%] md:h-[80%]">
             <Media slot="hero-athlete-f" keepRatio={false} rounded={false} className="h-full w-full" imgClassName="!object-contain object-bottom" sizes="(min-width:768px) 40vw, 60vw" priority />
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Camada 4 · gradiente para leitura */}
-        <div className="absolute inset-0 -z-25 bg-black/45" aria-hidden="true" />
-        <div className="absolute inset-0 -z-[5] bg-[linear-gradient(to_top,rgb(11_11_11/0.95)_0%,rgb(11_11_11/0.55)_40%,transparent_72%),linear-gradient(to_right,rgb(11_11_11/0.6)_0%,transparent_60%)]" aria-hidden="true" />
+        {/* Camada 4 · leitura: escurece só onde há texto, a foto continua viva */}
+        <div className="absolute inset-0 -z-25 bg-black/25" aria-hidden="true" />
+        <div
+          className="absolute inset-0 -z-[5] bg-[linear-gradient(to_top,rgb(11_11_11/0.92)_0%,rgb(11_11_11/0.6)_32%,transparent_62%),linear-gradient(to_right,rgb(11_11_11/0.55)_0%,transparent_55%),linear-gradient(to_bottom,rgb(11_11_11/0.5)_0%,transparent_22%)]"
+          aria-hidden="true"
+        />
 
-        {/* Chips superiores */}
-        <div className="flex flex-wrap items-start justify-end gap-2 p-4 pt-[calc(var(--nav-h)+0.5rem)] md:p-6 md:pt-[calc(var(--nav-h)+1rem)]">
-          <span className="hero-chip glass label inline-flex h-10 items-center gap-2 rounded-[var(--radius-chip)] px-3">
-            <span className="pulse-dot" aria-hidden="true" />
-            <HeroClock />
-          </span>
-          <span className="hero-chip glass label hidden h-10 items-center rounded-[var(--radius-chip)] px-3 sm:inline-flex">{zeroum.area}</span>
-          <span className="hero-chip glass label hidden h-10 items-center gap-2 rounded-[var(--radius-chip)] px-3 sm:inline-flex">
-            <span className="grid size-5 place-items-center rounded-[5px] bg-red" aria-hidden="true">
-              <MapPin size={12} strokeWidth={2.5} />
-            </span>
-            Americana · SP
-          </span>
-        </div>
-
-        {/* Conteúdo */}
+        {/* Conteúdo — tudo embaixo, alinhado à esquerda */}
         <div className="mt-auto grid gap-6 p-5 md:grid-cols-12 md:items-end md:p-10">
-          <div className="md:col-span-9">
-            <h1 id="hero-title" className="hero-title display text-hero leading-[1.1]">
+          <div className="md:col-span-8 lg:col-span-7">
+            <h1 id="hero-title" className="hero-title display text-[clamp(2.6rem,5.4vw,5.25rem)] leading-[1.06]">
               <span className="hero-line">
                 <span>A academia</span>
               </span>
@@ -70,7 +57,7 @@ export function Hero() {
                 <span>que não fecha.</span>
               </span>
             </h1>
-            <p className="hero-sub mt-5 max-w-[34rem] text-base text-white/85 md:text-lg">
+            <p className="hero-sub mt-4 max-w-[32rem] text-base text-white/85 md:text-lg">
               Musculação 24 horas em {zeroum.area}, com {zeroum.maquinas} máquinas, em Americana. Estrutura de verdade, acompanhamento de verdade.
             </p>
             <div className="hero-ctas mt-7 flex flex-wrap gap-3">
@@ -83,8 +70,8 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Chip de dado com linha conectora (ref. Velocity) */}
-          <div className="hidden items-center md:col-span-3 md:flex md:justify-end">
+          {/* Agregadores (ref. Velocity) */}
+          <div className="hidden items-center md:col-span-4 md:flex md:justify-end lg:col-span-5">
             <span className="hero-connector h-px w-16 bg-white/50" aria-hidden="true" />
             <span className="hero-connector size-2 rounded-full bg-red-bright" aria-hidden="true" />
             <p className="hero-chip glass ml-3 max-w-[15rem] rounded-[var(--radius-chip)] p-4">

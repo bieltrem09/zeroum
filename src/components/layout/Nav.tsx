@@ -2,12 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, MessageCircle, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
-import { CircleLink } from "@/components/ui/Buttons";
 import { navLinks, zeroum } from "@/content/zeroum";
 import { WA_GERAL } from "@/lib/whatsapp";
-import { OpenChip } from "./OpenChip";
 
 /**
  * Nav: some ao rolar para baixo, volta ao rolar para cima com fundo preto 85% + blur.
@@ -65,49 +63,64 @@ export function Nav() {
         Pular para o conteúdo
       </a>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[transform,background-color] duration-[250ms] ease-[var(--ease-out)] motion-reduce:transition-[background-color] ${
-          hidden ? "-translate-y-full motion-reduce:translate-y-0" : "translate-y-0"
-        } ${solid ? "bg-black/85 backdrop-blur-md" : "bg-transparent"}`}
+        className={`fixed inset-x-0 top-0 z-50 pt-3 transition-transform duration-[250ms] ease-[var(--ease-out)] motion-reduce:transition-none ${
+          hidden ? "-translate-y-[130%] motion-reduce:translate-y-0" : "translate-y-0"
+        }`}
       >
-        <nav aria-label="Principal" className="container-site flex h-[var(--nav-h)] items-center justify-between gap-4">
-          <Link href="/" aria-label={`${zeroum.nome} — início`} className="shrink-0 py-3">
-            <Logo className="h-7 w-auto md:h-8" />
-          </Link>
-
-          <ul className="glass hidden items-center gap-1 rounded-full p-1 lg:flex">
-            {navLinks.map((l) => {
-              const active = pathname.startsWith(l.href);
-              return (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    aria-current={active ? "page" : undefined}
-                    className={`block rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
-                      active ? "bg-white text-black" : "text-white/80 hover:text-white"
-                    }`}
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="flex items-center gap-2">
-            <OpenChip className="glass hidden h-12 rounded-full px-4 xl:inline-flex" />
-            <Link href="/aula-experimental" className="btn btn-white hidden md:inline-flex">
-              Aula experimental
+        <nav aria-label="Principal" className="container-site">
+          <div
+            className={`flex h-16 items-center justify-between gap-4 rounded-full border pl-5 pr-2 transition-[background-color,border-color] duration-300 md:pl-6 ${
+              solid ? "border-white/10 bg-black/85 backdrop-blur-md" : "border-white/10 bg-black/30 backdrop-blur-md"
+            }`}
+          >
+            <Link href="/" aria-label={`${zeroum.nome} — início`} className="shrink-0 py-2">
+              <Logo className="h-6 w-auto md:h-7" />
             </Link>
-            <CircleLink href={WA_GERAL} label="Falar no WhatsApp" className="hidden md:inline-grid" />
-            <button
-              type="button"
-              onClick={openMenu}
-              className="btn-circle !bg-white !text-black lg:hidden"
-              aria-label="Abrir menu"
-              aria-haspopup="dialog"
-            >
-              <Menu size={20} aria-hidden="true" style={{ transform: "none" }} />
-            </button>
+
+            <ul className="hidden items-center gap-1 lg:flex">
+              {navLinks.map((l) => {
+                const active = pathname.startsWith(l.href);
+                return (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      aria-current={active ? "page" : undefined}
+                      className={`relative block rounded-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 ${
+                        active ? "text-white" : "text-white/70 hover:text-white"
+                      }`}
+                    >
+                      {l.label}
+                      {active && <span className="absolute bottom-0.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-red-bright" aria-hidden="true" />}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={WA_GERAL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline hidden !min-h-11 !px-4 md:inline-flex"
+                aria-label="Falar no WhatsApp"
+              >
+                <MessageCircle size={18} strokeWidth={2} aria-hidden="true" />
+                <span className="hidden xl:inline">WhatsApp</span>
+              </a>
+              <Link href="/aula-experimental" className="btn btn-red hidden !min-h-11 md:inline-flex">
+                Aula experimental
+              </Link>
+              <button
+                type="button"
+                onClick={openMenu}
+                className="grid size-11 place-items-center rounded-full bg-white text-black transition-transform duration-150 active:scale-95 lg:hidden"
+                aria-label="Abrir menu"
+                aria-haspopup="dialog"
+              >
+                <Menu size={20} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </nav>
       </header>
@@ -115,9 +128,9 @@ export function Nav() {
       <dialog ref={dlg} className="menu" aria-label="Menu" onClick={(e) => e.target === dlg.current && closeMenu()}>
         <div className="container-site flex h-full flex-col">
           <div className="flex h-[var(--nav-h)] items-center justify-between">
-            <Logo className="h-7 w-auto" />
-            <button type="button" onClick={closeMenu} className="btn-circle !bg-white !text-black" aria-label="Fechar menu">
-              <X size={20} aria-hidden="true" style={{ transform: "none" }} />
+            <Logo className="h-6 w-auto" />
+            <button type="button" onClick={closeMenu} className="grid size-11 place-items-center rounded-full bg-white text-black" aria-label="Fechar menu">
+              <X size={20} aria-hidden="true" />
             </button>
           </div>
           <ul className="mt-6 flex flex-col">
@@ -141,7 +154,6 @@ export function Nav() {
             ))}
           </ul>
           <div className="mt-auto flex flex-col gap-3 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-8">
-            <OpenChip withTime className="inline-flex text-gray-300" />
             <Link href="/aula-experimental" className="btn btn-red justify-center" onClick={closeMenu}>
               Agendar aula experimental
             </Link>

@@ -54,7 +54,7 @@
 @layer base {
 :root {
   --gutter: 16px;
-  --nav-h: 72px;
+  --nav-h: 76px; /* 12px de respiro + barra de 64px */
   color-scheme: dark;
 }
 @media (min-width: 768px) {
