@@ -6,7 +6,7 @@ import { WA_AULA } from "@/lib/whatsapp";
 const passos = [
   { n: "01", t: "Chame a gente", d: "Pelo WhatsApp (19) 99620-9541 ou pelo formulário de aula experimental. A resposta é rápida." },
   { n: "02", t: "Conheça a estrutura", d: "Venha ver os 2.500 m², as 230 máquinas e tirar dúvidas com a equipe. Os alunos destacam os professores atenciosos." },
-  { n: "03", t: "Escolha como treinar", d: "Plano direto com a academia, diária de R$ 39,90 ou o seu Wellhub (Silver+) ou TotalPass (TP2+)." },
+  { n: "03", t: "Escolha como treinar", d: "Plano Mensal (R$ 170), Anual (R$ 149/mês), diária de R$ 39,90 ou o seu Wellhub (Silver+) ou TotalPass (TP2+)." },
 ];
 
 /** 07 · SEU PRIMEIRO TREINO — do zero ao um. A linha entre os passos se desenha no scroll (data-fx="line"). */

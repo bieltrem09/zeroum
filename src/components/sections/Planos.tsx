@@ -18,7 +18,7 @@ export function Planos({ full = false, label = "05" }: { full?: boolean; label?:
             </h2>
           </div>
           <p className="max-w-md text-gray-300 md:col-span-5 md:justify-self-end">
-            Plano direto com a academia, diária para conhecer ou o app de benefício da sua empresa. Em todos você treina na mesma estrutura de {zeroum.area}.
+            Plano Mensal ou Anual, diária para conhecer ou o app de benefício da sua empresa. Em todos você treina na mesma estrutura de {zeroum.area}.
           </p>
         </div>
 

@@ -615,3 +615,36 @@ dialog.menu::backdrop {
     transform: rotate(360deg);
   }
 }
+
+/* =====================================================================
+   Mapa real (Google) com a cara da Zero Um
+   ===================================================================== */
+@layer components {
+  /* Google Maps claro → noturno vermelho: tira a cor, inverte e tinge (sepia + hue-rotate)
+     no vermelho da marca. Rótulos e o pino continuam legíveis. */
+  .map-zeroum-frame {
+    filter: grayscale(1) invert(0.92) sepia(1) hue-rotate(310deg) saturate(2.2) brightness(0.85) contrast(1.15);
+  }
+  .map-pulse {
+    animation: map-pulse 2.4s var(--ease-out) infinite;
+  }
+  .map-pulse-2 {
+    animation-delay: 1.2s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .map-pulse {
+      animation: none;
+      opacity: 0.5;
+    }
+  }
+}
+@keyframes map-pulse {
+  from {
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0.9;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}

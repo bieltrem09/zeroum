@@ -24,7 +24,7 @@ export default function PrivacidadePage() {
 
         <h2>3. Serviços de terceiros</h2>
         <p>
-          Ao clicar em links ou botões, você é levado ao WhatsApp, Instagram e Google Maps, que têm políticas próprias. O mapa do Google só é carregado se você clicar em “Carregar mapa do Google”.
+          O mapa da seção de localização é do Google Maps e é carregado quando você chega perto dessa parte da página. Os botões levam ao WhatsApp, Instagram, Google Maps, Wellhub e TotalPass, que têm políticas próprias.
         </p>
 
         <h2>4. Cookies e métricas</h2>

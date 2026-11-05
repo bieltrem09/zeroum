@@ -5,14 +5,14 @@ import { CtaFinal } from "@/components/sections/CtaFinal";
 
 export const metadata = pageMeta(
   "Planos e preços",
-  "Como treinar na Zero Um CT em Americana: plano direto com a academia, diária avulsa de R$ 39,90, Wellhub (Silver+) ou TotalPass (TP2+).",
+  "Planos da Zero Um CT em Americana: Mensal R$ 170, Anual R$ 149/mês, diária R$ 39,90, Wellhub (Silver+) e TotalPass (TP2+). Musculação 24 horas.",
   "/planos",
 );
 
 export default function PlanosPage() {
   return (
     <>
-      <PageHero n="01" kicker="Planos" title="Planos e" accent="valores." intro="Diária avulsa por R$ 39,90, plano direto com a academia ou o app de benefício da sua empresa. Valores dos planos pelo WhatsApp, com resposta rápida." />
+      <PageHero n="01" kicker="Planos" title="Planos e" accent="valores." intro="Plano Mensal por R$ 170, Anual por R$ 149 por mês, diária de R$ 39,90 ou o app de benefício da sua empresa." />
       <Planos full label="02" />
       <CtaFinal />
     </>

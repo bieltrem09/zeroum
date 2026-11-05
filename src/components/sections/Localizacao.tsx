@@ -1,95 +1,108 @@
-"use client";
-import { useState } from "react";
-import { MapPin } from "lucide-react";
+import { ExternalLink, MapPin, Navigation } from "lucide-react";
 import { zeroum } from "@/content/zeroum";
 import { WA_GERAL } from "@/lib/whatsapp";
 import { SectionLabel } from "@/components/ui/SectionHead";
 import { Media } from "@/components/ui/Media";
+import { Logo } from "@/components/brand/Logo";
 
-const EMBED = `https://www.google.com/maps?q=${encodeURIComponent("Zero Um CT Americana")}&output=embed`;
+/** Mapa real do Google (sem chave de API): o próprio Google localiza a academia pelo nome. */
+const BUSCA = "Zero Um CT Americana, Rua Orlando de Santi 220, Campo Limpo, Americana - SP";
+const EMBED = `https://www.google.com/maps?q=${encodeURIComponent(BUSCA)}&z=16&hl=pt-BR&output=embed`;
 
-/** Mapa estilizado em SVG (0 KB de terceiros). O iframe do Google só carrega no clique. */
-function MapaEstilizado() {
-  return (
-    <svg viewBox="0 0 800 500" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <rect width="800" height="500" fill="var(--color-carbon)" />
-      <g stroke="rgb(255 255 255 / 0.07)" strokeWidth="1">
-        {Array.from({ length: 22 }, (_, i) => (
-          <line key={`v${i}`} x1={i * 40} y1="0" x2={i * 40 - 120} y2="500" />
-        ))}
-        {Array.from({ length: 14 }, (_, i) => (
-          <line key={`h${i}`} x1="0" y1={i * 40} x2="800" y2={i * 40 + 60} />
-        ))}
-      </g>
-      <path d="M-20 360 C 160 300, 300 340, 420 260 S 680 120, 840 140" fill="none" stroke="rgb(255 255 255 / 0.22)" strokeWidth="14" />
-      <path d="M120 -20 L 300 520" fill="none" stroke="rgb(255 255 255 / 0.14)" strokeWidth="8" />
-      <path d="M560 -20 C 520 160, 600 300, 540 520" fill="none" stroke="rgb(255 255 255 / 0.14)" strokeWidth="8" />
-      <circle cx="430" cy="250" r="70" fill="rgb(227 24 45 / 0.12)" />
-      <circle cx="430" cy="250" r="34" fill="rgb(227 24 45 / 0.22)" />
-    </svg>
-  );
-}
-
+/**
+ * LOCALIZAÇÃO — mapa real com a cara da Zero Um:
+ * Google Maps embutido (carrega só perto da tela: loading="lazy"), tingido de preto e vermelho
+ * por filtro CSS, com vinheta, pulso vermelho no ponto da academia e um card da unidade.
+ */
 export function Localizacao({ label = "12" }: { label?: string }) {
-  const [live, setLive] = useState(false);
   const e = zeroum.endereco;
   return (
     <section aria-labelledby="loc-title" className="relative z-10 bg-black py-24 md:py-32">
-      <div className="container-site grid gap-10 lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <SectionLabel n={label}>Localização</SectionLabel>
-          <h2 id="loc-title" className="display mt-4 text-section">
-            Americana,
-            <br />
-            <span className="text-red">SP.</span>
-          </h2>
-          <address className="mt-8 not-italic">
-            <p className="text-lg font-semibold">{e.rua}</p>
-            <p className="text-gray-300">
-              {e.bairro} · {e.cidade}/{e.uf} · CEP {e.cep}
-            </p>
-            <p className="mt-4 text-gray-300">{zeroum.referenciaLocal}.</p>
-          </address>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href={zeroum.mapa} target="_blank" rel="noopener noreferrer" className="btn btn-red">
-              Traçar rota <span className="btn-arrow" aria-hidden="true">→</span>
-            </a>
-            <a href={WA_GERAL} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-              Chamar no WhatsApp
-            </a>
+      <div className="container-site">
+        <div className="grid gap-6 md:grid-cols-12 md:items-end">
+          <div className="md:col-span-7">
+            <SectionLabel n={label}>Localização</SectionLabel>
+            <h2 id="loc-title" className="display mt-4 text-section">
+              Americana,
+              <br />
+              <span className="text-red">SP.</span>
+            </h2>
           </div>
+          <p className="max-w-md text-gray-300 md:col-span-5 md:justify-self-end">
+            No Campo Limpo, perto da Rodoviária de Americana. Procure o “01” vermelho na fachada preta: tem estacionamento em frente ao prédio.
+          </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-5 lg:col-span-8">
-        <figure className="sm:col-span-2">
-          <Media slot="fachada" keepRatio={false} className="aspect-[4/5] w-full sm:aspect-auto sm:h-[520px]" sizes="(min-width:1024px) 26vw, (min-width:640px) 40vw, 100vw" />
-          <figcaption className="label mt-3 text-gray-300">Procure o “01” vermelho na fachada</figcaption>
-        </figure>
-        <div className="relative h-[360px] overflow-hidden rounded-[var(--radius-photo)] sm:col-span-3 sm:h-[520px]">
-          {live ? (
+        <div className="mt-12 lg:relative">
+          {/* Mapa */}
+          <div className="map-zeroum relative h-[420px] overflow-hidden rounded-[var(--radius-photo)] border border-white/10 bg-carbon md:h-[600px]">
             <iframe
               src={EMBED}
-              title="Mapa da Zero Um CT Americana no Google Maps"
-              className="absolute inset-0 h-full w-full border-0 [filter:grayscale(1)_invert(0.92)_contrast(0.9)]"
+              title={`Mapa: ${zeroum.nome}, ${e.rua}, ${e.bairro}, ${e.cidade}/${e.uf}`}
+              className="map-zeroum-frame absolute inset-0 h-full w-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
             />
-          ) : (
-            <>
-              <MapaEstilizado />
-              <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-full flex-col items-center" aria-hidden="true">
-                <span className="grid size-12 place-items-center rounded-full bg-red">
-                  <MapPin size={22} />
+            {/* tinta da marca + vinheta (não bloqueiam o mapa) */}
+            <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_140px_40px_rgb(11_11_11/0.85)]" aria-hidden="true" />
+
+            {/* pulso no ponto da academia (o Google centraliza o mapa no local) */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2" aria-hidden="true">
+              <span className="map-pulse absolute left-0 top-0 size-28 rounded-full border-2 border-red-bright bg-red/10" />
+              <span className="map-pulse map-pulse-2 absolute left-0 top-0 size-28 rounded-full border-2 border-red-bright bg-red/10" />
+            </div>
+
+            <a
+              href={zeroum.mapa}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pill absolute right-4 top-4 min-h-10 bg-black/80 px-4 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black"
+            >
+              Abrir no Google Maps <ExternalLink size={14} aria-hidden="true" />
+            </a>
+          </div>
+
+          {/* Card da unidade: abaixo do mapa no celular, flutuando sobre ele no desktop */}
+          <article
+            aria-label="Unidade Zero Um CT Americana"
+            className="relative mt-3 overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-black/90 backdrop-blur-md lg:absolute lg:bottom-6 lg:left-6 lg:mt-0 lg:w-[380px]"
+          >
+            <Media slot="fachada" keepRatio={false} rounded={false} className="h-40 w-full" sizes="380px" />
+            <div className="p-6">
+              <div className="flex items-center justify-between gap-3">
+                <Logo className="h-6 w-auto" />
+                <span className="label inline-flex items-center gap-2 text-white">
+                  <span className="pulse-dot" aria-hidden="true" />
+                  Aberta 24h
                 </span>
-                <span className="h-4 w-0.5 bg-red" />
               </div>
-              <span className="label pill absolute left-4 top-4 bg-black/80 text-white">Mapa ilustrativo</span>
-              <button type="button" onClick={() => setLive(true)} className="btn btn-white absolute bottom-4 left-1/2 -translate-x-1/2">
-                Carregar mapa do Google
-              </button>
-            </>
-          )}
-        </div>
+              <address className="mt-5 not-italic">
+                <p className="flex gap-2 font-semibold">
+                  <MapPin size={18} className="mt-0.5 shrink-0 text-red-bright" aria-hidden="true" />
+                  {e.rua}
+                </p>
+                <p className="ml-[26px] text-sm text-gray-300">
+                  {e.bairro} · {e.cidade}/{e.uf} · CEP {e.cep}
+                </p>
+              </address>
+              <ul className="mt-4 flex flex-wrap gap-2" aria-label="Destaques da unidade">
+                {["2.500 m²", "230 máquinas", "Wellhub · TotalPass"].map((t) => (
+                  <li key={t} className="pill min-h-7 border border-white/15 px-3 text-xs text-white/90">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 grid grid-cols-2 gap-2">
+                <a href={zeroum.mapa} target="_blank" rel="noopener noreferrer" className="btn btn-red justify-center !px-3">
+                  <Navigation size={16} aria-hidden="true" /> Traçar rota
+                </a>
+                <a href={WA_GERAL} target="_blank" rel="noopener noreferrer" className="btn btn-outline justify-center !px-3">
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>

@@ -3,7 +3,9 @@ import { PricingTable, type PricingPlan } from "@/components/ui/pricing-table";
 import { formasDeTreinar } from "@/content/zeroum";
 import { waLink } from "@/lib/whatsapp";
 
-const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+/** R$ 170 (inteiro) · R$ 39,90 (com centavos) */
+const brl = (v: number) =>
+  v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 });
 
 const plans: PricingPlan[] = formasDeTreinar.map((f) => ({
   id: f.id,

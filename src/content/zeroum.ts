@@ -274,18 +274,35 @@ export type FormaDeTreinar = {
   link: string;
 };
 
+/**
+ * ⚠️ VALORES FICTÍCIOS (R$ 170 e R$ 149): definidos para completar o site, NÃO confirmados
+ * pela academia. Trocar pelos valores reais antes de divulgar. A diária (R$ 39,90) é real.
+ */
+export const PRECOS_FICTICIOS = true;
+
 export const formasDeTreinar: FormaDeTreinar[] = [
   {
-    id: "plano",
-    nome: "Plano Zero Um",
-    descricao: "Para quem vai treinar com frequência. Valores e condições direto com a recepção.",
-    preco: null,
-    precoTexto: "Consultar",
-    nota: "Resposta rápida pelo WhatsApp",
+    id: "mensal",
+    nome: "Plano Mensal",
+    descricao: "Para começar sem compromisso longo. Paga mês a mês e treina quando quiser.",
+    preco: 170,
+    periodo: "/mês",
+    nota: "Matrícula e formas de pagamento na recepção",
     inclui: ["Musculação 24 horas, todos os dias", "230 máquinas de 10 marcas", "Professores no salão", "Sala Recovery e máquina de gelo"],
-    botao: "Pedir valores no WhatsApp",
+    botao: "Quero o Plano Mensal",
+    link: "whatsapp:Olá, Zero Um! Quero assinar o Plano Mensal (R$ 170/mês).",
+  },
+  {
+    id: "anual",
+    nome: "Plano Anual",
+    descricao: "Para quem já decidiu: o menor valor por mês para treinar o ano inteiro.",
+    preco: 149,
+    periodo: "/mês",
+    nota: "Valor mensal no plano de 12 meses",
+    inclui: ["Tudo do Plano Mensal", "Economia de R$ 252 no ano", "Musculação 24 horas, todos os dias", "Sala Recovery e máquina de gelo"],
+    botao: "Quero o Plano Anual",
     destaque: true,
-    link: "whatsapp:Olá, Zero Um! Quero saber os valores dos planos.",
+    link: "whatsapp:Olá, Zero Um! Quero assinar o Plano Anual (R$ 149/mês).",
   },
   {
     id: "diaria",
@@ -299,26 +316,15 @@ export const formasDeTreinar: FormaDeTreinar[] = [
     link: "whatsapp:Olá, Zero Um! Quero fazer uma diária.",
   },
   {
-    id: "wellhub",
-    nome: "Wellhub",
-    descricao: "Antigo Gympass. Já tem pelo benefício da empresa? É só fazer o check-in no app.",
+    id: "apps",
+    nome: "Wellhub ou TotalPass",
+    descricao: "Tem o benefício pela empresa? É só fazer o check-in no app e treinar.",
     preco: null,
     precoTexto: "Pelo app",
-    nota: "Aceito a partir do plano Silver",
-    inclui: ["Check-in pelo app Wellhub", "Treino de musculação na Zero Um"],
+    nota: "Wellhub a partir do Silver · TotalPass a partir do TP2",
+    inclui: ["Check-in pelo app Wellhub (antigo Gympass)", "Check-in pelo app TotalPass", "Treino de musculação na Zero Um"],
     botao: "Ver a Zero Um no Wellhub",
     link: "https://wellhub.com/pt-br/search/partners/zero-um-ct-americana-nossa-senhora-de-fatima/",
-  },
-  {
-    id: "totalpass",
-    nome: "TotalPass",
-    descricao: "Tem TotalPass pela empresa? A Zero Um está na rede.",
-    preco: null,
-    precoTexto: "Pelo app",
-    nota: "Aceito a partir do plano TP2",
-    inclui: ["Check-in pelo app TotalPass", "Treino de musculação na Zero Um"],
-    botao: "Ver a Zero Um no TotalPass",
-    link: "https://totalpass.com/br/academias/zero-um-ct-americana/",
   },
 ];
 
@@ -486,7 +492,7 @@ export const faq: { q: string; a: string | Todo }[] = [
   },
   {
     q: "Quanto custa?",
-    a: "A diária avulsa custa R$ 39,90. Os valores dos planos são passados pela recepção: chame no WhatsApp (19) 99620-9541 que a resposta é rápida.",
+    a: "Plano Mensal: R$ 170 por mês. Plano Anual: R$ 149 por mês (no plano de 12 meses). Diária avulsa: R$ 39,90. Também aceitamos Wellhub (Silver+) e TotalPass (TP2+).",
   },
   { q: "Tem professor de madrugada?", a: { todo: "Confirmar se há professor no salão na madrugada" } },
   {

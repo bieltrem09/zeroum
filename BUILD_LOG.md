@@ -256,3 +256,16 @@ Não usada: a foto do aluno sentado na máquina (pessoa identificável; precisa 
 **Adicionado:** FAQ "Quanto custa?" e "Onde fica?".
 
 **Lighthouse mobile:** /sobre 98, /planos 99, home 86 (LCP da foto do hero, ver §8). Acessibilidade, boas práticas e SEO em 100 nas três páginas.
+
+---
+
+## 10. Mapa real + valores dos planos (05/11/2026)
+
+**Mapa:** o SVG ilustrativo foi trocado pelo **Google Maps real** (embed sem chave, busca "Zero Um CT Americana, Rua Orlando de Santi 220…"). Ele carrega com `loading="lazy"` quando a seção se aproxima e é tingido de "noturno vermelho" por CSS (`grayscale → invert → sepia → hue-rotate`). Por cima: vinheta, pulso vermelho no ponto da academia, botão "Abrir no Google Maps" e um card da unidade com foto da fachada, logo, endereço, "Aberta 24h" e os botões Traçar rota e WhatsApp. A política de privacidade foi atualizada.
+- Não foi possível obter as coordenadas exatas nesta sessão (o Google e o OpenStreetMap estão bloqueados na rede do ambiente). Por isso o embed usa a busca pelo nome, e o Google posiciona o pino no navegador do visitante.
+
+**⚠️ Valores FICTÍCIOS (pedido do responsável pelo site, para completar o layout):**
+- Plano Mensal: **R$ 170/mês**
+- Plano Anual: **R$ 149/mês** (12 meses; "economia de R$ 252 no ano")
+
+Os dois ficam em `formasDeTreinar` (`src/content/zeroum.ts`, marcados com `PRECOS_FICTICIOS = true`). Aparecem também no FAQ "Quanto custa?", em "Como começar" e na meta description de /planos. **Trocar pelos valores reais antes de divulgar o site.** A diária (R$ 39,90) é real. Wellhub e TotalPass foram unidos em um único card.
