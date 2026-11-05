@@ -41,6 +41,20 @@ export function Nav() {
     };
   }, []);
 
+  /** Logo / "Início": na home, sobe suave até o topo; em outra página, navega para a home (topo). */
+  const goHome = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // nova aba etc.
+    closeMenu();
+    if (pathname === "/") {
+      e.preventDefault();
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (window.__lenis && !reduce) window.__lenis.scrollTo(0, { duration: 1.1 });
+      else window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      if (location.hash) history.replaceState(null, "", "/");
+      setHidden(false);
+    }
+  };
+
   const openMenu = () => {
     dlg.current?.showModal();
     window.__lenis?.stop();
@@ -73,7 +87,7 @@ export function Nav() {
               solid ? "border-white/10 bg-black/85 backdrop-blur-md" : "border-white/10 bg-black/30 backdrop-blur-md"
             }`}
           >
-            <Link href="/" aria-label={`${zeroum.nome} — início`} className="shrink-0 py-2">
+            <Link href="/" scroll onClick={goHome} aria-label={`${zeroum.nome} — voltar ao início`} className="shrink-0 py-2">
               <Logo className="h-6 w-auto md:h-7" />
             </Link>
 
@@ -135,7 +149,7 @@ export function Nav() {
           </div>
           <ul className="mt-6 flex flex-col">
             <li className="hairline border-b">
-              <Link href="/" className="display block py-3 text-[clamp(2.75rem,13vw,4.5rem)]" onClick={closeMenu}>
+              <Link href="/" className="display block py-3 text-[clamp(2.75rem,13vw,4.5rem)]" onClick={goHome}>
                 Início
               </Link>
             </li>

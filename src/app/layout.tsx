@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { ScrollFx } from "@/components/motion/ScrollFx";
+import { IntroSplash } from "@/components/layout/IntroSplash";
 import { SITE_URL, gymJsonLd } from "@/lib/seo";
 
 const anton = Anton({ weight: "400", subsets: ["latin"], display: "swap", variable: "--font-anton", adjustFontFallback: true });
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(gymJsonLd()) }} />
       </head>
       <body>
+        <IntroSplash />
         <SmoothScroll />
         <ScrollFx />
         <Nav />
