@@ -13,7 +13,11 @@ import { usePathname } from "next/navigation";
  * data-fx:
  *  hero-parallax   foto desce / logo sobe (scrub) + pin para a "folha" subir por cima
  *  words           cor por palavra (cinza→preto) acompanhando a leitura (SplitText)
- *  rise            entrada y:24→0 + opacity, stagger nos filhos [data-fx-item]
+ *  lines           linhas sobem de uma máscara, uma a uma (SplitText)
+ *  rise            entrada y:28→0 + opacity, stagger nos filhos [data-fx-item]
+ *  count           número conta de 0 até data-count-to
+ *  fill            barra preenche scaleX 0→1
+ *  pop             aparece com leve escala (data-fx-delay em s)
  *  clip-in         clip-path inset → 0 (scrub)
  *  hscroll         pin + scroll horizontal do [data-fx-track] (≥1024px)
  *  line            scaleX 0→1 (scrub)
@@ -31,7 +35,7 @@ export function ScrollFx() {
       const [{ gsap }, { ScrollTrigger }] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger")]);
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger);
-      const needsSplit = document.querySelector('[data-fx="words"]');
+      const needsSplit = document.querySelector('[data-fx="words"], [data-fx="lines"]');
       const SplitText = needsSplit ? (await import("gsap/SplitText")).SplitText : null;
       if (cancelled) return;
       if (SplitText) gsap.registerPlugin(SplitText);
@@ -59,9 +63,53 @@ export function ScrollFx() {
           gsap.fromTo(split.words, { color: "#807e7a" }, { color: "#0b0b0b", ease: "none", stagger: 0.1, scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 45%", scrub: true } });
         });
 
+        // Linhas sobem de dentro de uma máscara, uma a uma (1x ao entrar). Elegante e legível:
+        // o texto continua sendo uma frase (aria preservado pelo SplitText).
+        document.querySelectorAll<HTMLElement>('[data-fx="lines"]').forEach((el) => {
+          if (!SplitText) return;
+          const split = SplitText.create(el, { type: "lines", mask: "lines", linesClass: "fx-line", aria: "none" });
+          splits.push(split);
+          gsap.from(split.lines, { yPercent: 105, duration: 1.1, ease: "expo.out", stagger: 0.09, scrollTrigger: { trigger: el, start: "top 82%", once: true } });
+        });
+
         document.querySelectorAll<HTMLElement>('[data-fx="rise"]').forEach((el) => {
           const items = el.querySelectorAll("[data-fx-item]");
-          gsap.from(items.length ? items : el, { y: 24, opacity: 0, duration: 0.8, ease: "expo.out", stagger: 0.08, scrollTrigger: { trigger: el, start: "top 85%", once: true } });
+          gsap.from(items.length ? items : el, { y: 28, opacity: 0, duration: 0.9, ease: "expo.out", stagger: 0.09, scrollTrigger: { trigger: el, start: "top 85%", once: true } });
+        });
+
+        // Números contam até o valor real (o HTML já traz o valor final: sem JS/SEO intactos).
+        document.querySelectorAll<HTMLElement>('[data-fx="count"]').forEach((el) => {
+          const to = Number(el.dataset.countTo);
+          if (!Number.isFinite(to)) return;
+          const fmt = (v: number) => Math.round(v).toLocaleString("pt-BR");
+          // Só zera se ainda está abaixo da tela; se o trigger não disparar, o valor real fica visível.
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+          const obj = { v: 0 };
+          el.textContent = fmt(0);
+          ScrollTrigger.create({
+            trigger: el,
+            start: "top 92%",
+            once: true,
+            onEnter: () =>
+              gsap.to(obj, {
+                v: to,
+                duration: 1.6,
+                ease: "expo.out",
+                onUpdate: () => {
+                  el.textContent = fmt(obj.v);
+                },
+              }),
+          });
+        });
+
+        // Barra que se preenche da esquerda para a direita (1x ao entrar)
+        document.querySelectorAll<HTMLElement>('[data-fx="fill"]').forEach((el) => {
+          gsap.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "expo.inOut", transformOrigin: "left center", scrollTrigger: { trigger: el, start: "top 85%", once: true } });
+        });
+
+        // Elementos que aparecem depois da barra (ex.: marcador "agora")
+        document.querySelectorAll<HTMLElement>('[data-fx="pop"]').forEach((el) => {
+          gsap.from(el, { opacity: 0, y: 8, scale: 0.92, duration: 0.6, delay: Number(el.dataset.fxDelay ?? 0), ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
         });
 
         document.querySelectorAll<HTMLElement>('[data-fx="clip-in"]').forEach((el) => {

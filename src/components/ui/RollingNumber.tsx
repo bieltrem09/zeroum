@@ -8,10 +8,11 @@
 export function RollingNumber({ value, className = "" }: { value: string; className?: string }) {
   return (
     <span className={`tnum inline-flex ${className}`}>
+      {/* colunas de dígitos são só visuais: fora da seleção/cópia e do leitor de tela */}
       <span className="sr-only">{value}</span>
       {value.split("").map((ch, i) =>
         /\d/.test(ch) ? (
-          <span key={i} className="relative inline-block h-[1em] overflow-hidden leading-none" aria-hidden="true">
+          <span key={i} className="relative inline-block h-[1em] select-none overflow-hidden leading-none" aria-hidden="true">
             <span
               className="flex flex-col transition-transform duration-[240ms] ease-[var(--ease-out)] motion-reduce:transition-none"
               style={{ transform: `translateY(-${Number(ch) * 10}%)` }}
@@ -24,7 +25,7 @@ export function RollingNumber({ value, className = "" }: { value: string; classN
             </span>
           </span>
         ) : (
-          <span key={i} aria-hidden="true" className="inline-block leading-none">
+          <span key={i} aria-hidden="true" className="inline-block select-none leading-none">
             {ch}
           </span>
         ),

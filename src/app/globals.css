@@ -562,3 +562,56 @@ dialog.menu::backdrop {
     color: var(--color-red-bright);
   }
 }
+
+/* =====================================================================
+   Planos — "Destaque luminoso" (ref. 21st: Glowing Pricing Tiers)
+   ===================================================================== */
+@layer components {
+  .plan-card {
+    isolation: isolate;
+    overflow: hidden;
+  }
+  /* Borda que gira devagar no plano em destaque (movimento contínuo → linear, 6s;
+     mais rápida e intensa no hover). Reduced motion: parada. */
+  .plan-glow-ring {
+    position: absolute;
+    inset: -150%;
+    z-index: -1;
+    background: conic-gradient(from 0deg, transparent 0 55%, var(--color-red-deep) 68%, var(--color-red-bright) 76%, #ffffff 79%, var(--color-red) 82%, transparent 92%);
+    animation: plan-spin 6s linear infinite;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .plan-card:hover .plan-glow-ring {
+      animation-duration: 3s;
+    }
+  }
+  /* Spotlight: brilho que acompanha o mouse dentro do card */
+  .plan-spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(227 24 45 / 0.14), transparent 60%);
+    transition: opacity 300ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .plan-card:hover .plan-spotlight::before {
+      opacity: 1;
+    }
+  }
+  .plan-spotlight > * {
+    position: relative;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .plan-glow-ring {
+      animation: none;
+      background: var(--color-red);
+    }
+  }
+}
+@keyframes plan-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

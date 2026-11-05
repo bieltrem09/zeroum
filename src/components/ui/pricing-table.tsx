@@ -136,49 +136,100 @@ interface PlanCardProps {
   labels: PricingLabels;
 }
 
+/** Conta o preço de 0 até o valor quando o card entra na tela (1x). Sem JS: valor final. */
+function useCountUp(target: number | null, ref: React.RefObject<HTMLElement | null>) {
+  const [value, setValue] = useState<number | null>(target);
+  React.useEffect(() => {
+    if (target === null || !ref.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    setValue(0);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        const t0 = performance.now();
+        const dur = 900;
+        const tick = (t: number) => {
+          const k = Math.min(1, (t - t0) / dur);
+          const eased = 1 - Math.pow(1 - k, 4); // ease-out quart
+          setValue(target * eased);
+          if (k < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(ref.current);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [target, ref]);
+  return value;
+}
+
 const PlanCard: React.FC<PlanCardProps> = ({ plan, billingCycle, onSelect, isActive, annualDiscount, formatPrice, labels }) => {
   const annual = billingCycle === "annually";
-  // Annual: total per year with the discount applied.
   const price = plan.price === null ? null : annual ? Math.round(plan.price * 12 * (1 - annualDiscount)) : plan.price;
   const cycleLabel = plan.period ?? (annual ? labels.annualPeriod : labels.monthlyPeriod);
   const highlighted = isActive || plan.isRecommended;
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const shown = useCountUp(price, cardRef);
 
-  return (
+  // Spotlight: brilho que segue o ponteiro (só ponteiro fino; transform/opacity-free: só background).
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
+  const body = (
     <div
+      ref={cardRef}
+      onPointerMove={onPointerMove}
       className={cn(
-        "flex h-full flex-col rounded-[var(--radius-card,0.75rem)] border p-6 transition-[border-color,box-shadow] duration-300 md:p-8",
-        isActive ? "border-primary bg-accent/10 ring-2 ring-primary" : "border-border bg-card",
-        plan.isRecommended && !isActive && "border-primary",
+        "plan-spotlight relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-card,0.75rem)-1.5px)] p-6 md:p-8",
+        highlighted ? "bg-[#120a0b]" : "bg-card",
       )}
     >
-      {plan.isRecommended && (
-        <div className="mb-4 self-start rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
-          {labels.recommended}
-        </div>
-      )}
+      {/* Linha do selo com altura fixa em todos os cards → títulos e preços alinhados */}
+      <div className="mb-4 h-6">
+        {plan.isRecommended && (
+          <span className="inline-flex h-6 items-center rounded-full bg-primary px-3 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
+            {labels.recommended}
+          </span>
+        )}
+      </div>
       <h3 className="text-2xl font-bold tracking-tight text-card-foreground">{plan.name}</h3>
-      <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
+      <p className="mt-2 text-sm text-muted-foreground xl:min-h-[3.75rem]">{plan.description}</p>
 
-      <div className="my-6">
+      <div className="my-7">
         {price !== null ? (
-          <>
-            <span className="text-4xl font-extrabold tabular-nums text-card-foreground">{formatPrice(price)}</span>
+          <p className="flex items-baseline gap-1">
+            <span className="sr-only">{formatPrice(price)}</span>
+            <span className="text-[2.75rem] font-extrabold leading-none tracking-tight tabular-nums text-card-foreground" aria-hidden="true">
+              {formatPrice(shown ?? price)}
+            </span>
             <span className="text-lg font-medium text-muted-foreground">{cycleLabel}</span>
-          </>
+          </p>
         ) : (
-          <span className="text-3xl font-extrabold text-card-foreground">{plan.priceFallback ?? "—"}</span>
+          <p className="text-[2.25rem] font-extrabold leading-none tracking-tight text-card-foreground">{plan.priceFallback ?? "—"}</p>
         )}
         {annual && plan.price !== null && annualDiscount > 0 && (
           <p className="mt-1 text-xs text-muted-foreground line-through">{labels.billedAnnually(formatPrice(plan.price * 12))}</p>
         )}
-        {plan.priceNote && <p className="mt-2 text-xs text-muted-foreground">{plan.priceNote}</p>}
+        {plan.priceNote && <p className="mt-3 text-xs text-muted-foreground">{plan.priceNote}</p>}
       </div>
 
-      <ul className="mb-8 flex-grow space-y-3">
+      <ul className="mb-8 flex-grow space-y-3 border-t border-border pt-6">
         {plan.features.map((feature) => (
           <li key={feature.id} className="flex items-start">
             {feature.included ? (
-              <Check className="mr-3 mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <span className="mr-3 mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-primary/15">
+                <Check className="h-3 w-3 text-primary" strokeWidth={3} aria-hidden="true" />
+              </span>
             ) : (
               <X className="mr-3 mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             )}
@@ -196,13 +247,30 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, billingCycle, onSelect, isAct
         disabled={plan.disabled}
         aria-label={labels.selectPlan(plan.name)}
         className={cn(
-          "mt-auto min-h-12 w-full rounded-full px-4 py-2 text-sm font-semibold transition-[background-color,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:active:scale-100",
-          highlighted ? "bg-primary text-primary-foreground hover:bg-primary/85" : "bg-secondary text-secondary-foreground hover:bg-secondary/70",
+          "group/btn mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-[background-color,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:active:scale-100",
+          highlighted ? "bg-primary text-primary-foreground hover:bg-[var(--color-red-deep,#9e0f1f)]" : "bg-white/[0.06] text-secondary-foreground ring-1 ring-inset ring-white/15 hover:bg-white/[0.12]",
           plan.disabled && "cursor-not-allowed opacity-50",
         )}
       >
         {plan.buttonText}
+        <span className="transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] [@media(hover:hover)]:group-hover/btn:translate-x-1" aria-hidden="true">
+          →
+        </span>
       </button>
+    </div>
+  );
+
+  return (
+    <div
+      data-fx-item
+      className={cn(
+        "plan-card group relative h-full rounded-[var(--radius-card,0.75rem)] p-[1.5px] transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1",
+        highlighted ? "plan-glow bg-primary/60" : "bg-white/10",
+        isActive && "ring-2 ring-primary",
+      )}
+    >
+      {highlighted && <span className="plan-glow-ring" aria-hidden="true" />}
+      {body}
     </div>
   );
 };

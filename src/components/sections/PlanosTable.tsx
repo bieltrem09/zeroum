@@ -33,6 +33,7 @@ export function PlanosTable() {
       billingCycle="monthly"
       onSelect={onSelect}
       formatPrice={brl}
+      data-fx="rise"
       className="max-w-none px-0 py-0 md:py-0"
       labels={{
         recommended: "Mais procurado",
