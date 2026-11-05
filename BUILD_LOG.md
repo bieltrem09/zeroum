@@ -230,3 +230,29 @@ Não usada: a foto do aluno sentado na máquina (pessoa identificável; precisa 
 - Logos estáticos (nav, menu, rodapé) viraram arquivos SVG (`<img>`) em vez de path inline repetido: HTML da home caiu de 248 KB para 170 KB.
 - Lighthouse mobile da home: 86–87 (simulado). O LCP **real** medido com throttling do DevTools é **2,1 s** (meta < 2,5 s); o LCP simulado é 3,7–4,0 s. O que ainda pesa é o TBT (tempo de JS no celular simulado, ~150–650 ms). Próximo passo, se quiser chegar a 95: transformar `Horarios24` e `Planos` em Server Components com ilhas menores.
 - Páginas internas: /estrutura 97 · acessibilidade, boas práticas e SEO seguem em 100.
+
+---
+
+## 9. Sobre nós + tabela de planos (shadcn) + limpeza do que não informa (05/11/2026)
+
+**Componente `pricing-table` (shadcn/ui).** Adicionado `components.json`, `src/lib/utils.ts` (`cn` com clsx + tailwind-merge) e tokens semânticos no `@theme`. O componente fica em `src/components/ui/pricing-table.tsx`; o demo, em `pricing-table-demo.tsx`. Ajustes em relação ao original:
+- `onSelect` conflitava com o evento nativo da `<div>` (erro de TypeScript); corrigido com `Omit<…, "onSelect">`.
+- O `className` virava a string "undefined"; os botões não tinham `type`; o preço anual mostrava o valor mensal.
+- Novas props opcionais: `formatPrice` (R$), `labels` (tradução), `annualDiscount`, plano com `price: null` + `priceFallback`, `period` e `priceNote` por plano. O grid se adapta a 4 colunas.
+
+**Planos (home e /planos):** os cards "Plano A/B/C — a confirmar" foram substituídos pelas formas reais de treinar: Plano Zero Um (valores pelo WhatsApp), Diária R$ 39,90, Wellhub (Silver+) e TotalPass (TP2+), com links para a página oficial da Zero Um em cada app. Sem desconto anual inventado e sem alternância mensal/anual.
+
+**Nova página /sobre:** quem é, lema da parede ("Você pode tudo, menos desistir"), números (2.500 m², 230 máquinas, 24h, 4,9 no Google), o que tem lá dentro, equipe (pelas avaliações reais), avaliações e endereço.
+
+**Removido por não informar o visitante:**
+- Avisos "A CONFIRMAR" no site público (só aparecem com `NEXT_PUBLIC_SHOW_TODOS=1`).
+- /professores (sem dados), /resultados (sem transformações), /horarios (grade com 28 "a confirmar"); todas com redirect.
+- Seção Comunidade (eventos sem data e sem foto).
+- Perguntas do FAQ sem resposta.
+- Ambientes não confirmados (cardio, vestiários) e placeholders de foto em /estrutura.
+- Frase "primeira aula por nossa conta" (gratuidade nunca confirmada) e o passo "avaliação de postura/mobilidade" (processo não confirmado).
+- Avatares vazios.
+
+**Adicionado:** FAQ "Quanto custa?" e "Onde fica?".
+
+**Lighthouse mobile:** /sobre 98, /planos 99, home 86 (LCP da foto do hero, ver §8). Acessibilidade, boas práticas e SEO em 100 nas três páginas.

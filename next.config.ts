@@ -6,6 +6,14 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 828, 1280, 1600, 2048],
   },
   poweredByHeader: false,
+  // Páginas removidas (sem conteúdo útil ainda) → destino que responde a mesma dúvida.
+  async redirects() {
+    return [
+      { source: "/professores", destination: "/sobre#equipe", permanent: false },
+      { source: "/resultados", destination: "/sobre#avaliacoes", permanent: false },
+      { source: "/horarios", destination: "/#horarios", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

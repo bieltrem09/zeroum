@@ -1,9 +1,9 @@
 import { faq } from "@/content/zeroum";
 import { SectionLabel } from "@/components/ui/SectionHead";
-import { Value } from "@/components/ui/Todo";
 
 /** 13 · FAQ — <details> nativo: acessível, sem JS. */
 export function Faq({ label = "13" }: { label?: string }) {
+  // Só perguntas com resposta confirmada: pergunta sem resposta não ajuda quem visita.
   const answered = faq.filter((f) => typeof f.a === "string");
   const jsonLd = {
     "@context": "https://schema.org",
@@ -22,7 +22,7 @@ export function Faq({ label = "13" }: { label?: string }) {
           </h2>
         </div>
         <div className="md:col-span-8">
-          {faq.map((f) => (
+          {answered.map((f) => (
             <details key={f.q} className="hairline border-b first:border-t">
               <summary className="flex min-h-16 items-center justify-between gap-6 py-5 text-lg font-semibold md:text-xl">
                 {f.q}
@@ -31,7 +31,7 @@ export function Faq({ label = "13" }: { label?: string }) {
                 </span>
               </summary>
               <div className="max-w-2xl pb-6 text-gray-600">
-                <Value v={f.a} />
+                {f.a as string}
               </div>
             </details>
           ))}

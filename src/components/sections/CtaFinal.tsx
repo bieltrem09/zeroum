@@ -21,7 +21,7 @@ export function CtaFinal() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/10" aria-hidden="true" />
           <div className="relative flex min-h-[460px] flex-col justify-end p-6 md:p-12">
             <h2 id="cta-title" className="display max-w-3xl text-[clamp(3rem,7vw,6.5rem)]">
-              Sua primeira aula é por nossa conta.
+              Vem conhecer a maior academia de Americana.
             </h2>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/aula-experimental" className="btn btn-red">

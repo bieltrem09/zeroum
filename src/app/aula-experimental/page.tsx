@@ -12,7 +12,7 @@ export const metadata = pageMeta(
 export default function AulaPage() {
   return (
     <>
-      <PageHero n="01" kicker="Aula experimental" title="Primeira aula" accent="por nossa conta." />
+      <PageHero n="01" kicker="Aula experimental" title="Venha conhecer" accent="a Zero Um." intro="Conheça a estrutura e tire suas dúvidas com a equipe antes de decidir. Preencha abaixo e a gente responde pelo WhatsApp." />
       <section className="bg-black pb-24">
         <div className="container-site grid gap-12 lg:grid-cols-12">
           <aside className="lg:col-span-4">

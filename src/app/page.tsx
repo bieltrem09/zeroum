@@ -3,15 +3,16 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { EstruturaScroller } from "@/components/sections/EstruturaScroller";
 import { Horarios24 } from "@/components/sections/Horarios24";
 import { Planos } from "@/components/sections/Planos";
-import { Professores } from "@/components/sections/ProfessoresSection";
-import { PrimeiroTreino } from "@/components/sections/PrimeiroTreino";
-import { Resultados } from "@/components/sections/Resultados";
 import { Depoimentos } from "@/components/sections/Depoimentos";
-import { Comunidade } from "@/components/sections/Comunidade";
+import { PrimeiroTreino } from "@/components/sections/PrimeiroTreino";
 import { CtaFinal } from "@/components/sections/CtaFinal";
 import { Localizacao } from "@/components/sections/Localizacao";
 import { Faq } from "@/components/sections/Faq";
 
+/**
+ * Ordem pensada nas perguntas de quem visita:
+ * o que é → como é por dentro → que horas abre → quanto custa → é bom? → como começo → onde fica → dúvidas.
+ */
 export default function Home() {
   return (
     <>
@@ -19,15 +20,12 @@ export default function Home() {
       <Manifesto />
       <EstruturaScroller />
       <Horarios24 />
-      <Planos />
-      <Professores />
+      <Planos label="05" />
+      <Depoimentos label="06" />
       <PrimeiroTreino />
-      <Resultados />
-      <Depoimentos />
-      <Comunidade />
       <CtaFinal />
-      <Localizacao />
-      <Faq />
+      <Localizacao label="09" />
+      <Faq label="10" />
     </>
   );
 }

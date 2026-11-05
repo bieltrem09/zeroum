@@ -70,11 +70,9 @@ export const zeroum = {
 /* ------------------------------------------------------------------ */
 
 export const navLinks = [
+  { href: "/sobre", label: "Sobre nós" },
   { href: "/estrutura", label: "Estrutura" },
   { href: "/planos", label: "Planos" },
-  { href: "/horarios", label: "Horários" },
-  { href: "/professores", label: "Professores" },
-  { href: "/resultados", label: "Resultados" },
   { href: "/contato", label: "Contato" },
 ] as const;
 
@@ -86,7 +84,7 @@ export const pilares = [
   {
     nome: "Estrutura",
     dado: "2.500 m²",
-    frase: "A maior academia de Americana: peso livre, máquinas, cardio e Sala Recovery debaixo do mesmo teto.",
+    frase: "A maior academia de Americana: peso livre, máquinas, Glúteo Zone e Sala Recovery debaixo do mesmo teto.",
   },
   {
     nome: "Performance",
@@ -144,7 +142,7 @@ export const ambientes: Ambiente[] = [
     resumo: "Esteiras e bikes para aquecer ou fechar o treino.",
     detalhe: "TODO: confirmar equipamentos de cardio (esteiras, bikes, escada, remo).",
     foto: "estrutura-cardio",
-    confirmado: true,
+    confirmado: false,
   },
   {
     id: "recovery",
@@ -168,7 +166,7 @@ export const ambientes: Ambiente[] = [
     resumo: "Vestiários feminino e masculino.",
     detalhe: "TODO: confirmar chuveiros, armários e se há fechadura/cadeado.",
     foto: "estrutura-vestiario",
-    confirmado: true,
+    confirmado: false,
   },
   {
     id: "recepcao",
@@ -254,6 +252,73 @@ export const planos: Plano[] = [
     nome: "Plano C — a confirmar",
     precos: { mensal: null, semestral: null, anual: null },
     inclui: ["Acesso 24h à musculação", "TODO: o que mais inclui"],
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Formas de treinar (tabela de planos) — só dados confirmados          */
+/* ------------------------------------------------------------------ */
+
+export type FormaDeTreinar = {
+  id: string;
+  nome: string;
+  descricao: string;
+  preco: number | null;
+  periodo?: string;
+  precoTexto?: string;
+  nota?: string;
+  inclui: string[];
+  botao: string;
+  destaque?: boolean;
+  /** Para onde o botão leva. */
+  link: string;
+};
+
+export const formasDeTreinar: FormaDeTreinar[] = [
+  {
+    id: "plano",
+    nome: "Plano Zero Um",
+    descricao: "Para quem vai treinar com frequência. Valores e condições direto com a recepção.",
+    preco: null,
+    precoTexto: "Consultar",
+    nota: "Resposta rápida pelo WhatsApp",
+    inclui: ["Musculação 24 horas, todos os dias", "230 máquinas de 10 marcas", "Professores no salão", "Sala Recovery e máquina de gelo"],
+    botao: "Pedir valores no WhatsApp",
+    destaque: true,
+    link: "whatsapp:Olá, Zero Um! Quero saber os valores dos planos.",
+  },
+  {
+    id: "diaria",
+    nome: "Diária avulsa",
+    descricao: "Para treinar um dia, conhecer a estrutura ou quando está de passagem por Americana.",
+    preco: 39.9,
+    periodo: "/dia",
+    nota: "Campanhas podem ter valor promocional",
+    inclui: ["Um dia de treino", "Mesma estrutura de quem é aluno"],
+    botao: "Quero fazer uma diária",
+    link: "whatsapp:Olá, Zero Um! Quero fazer uma diária.",
+  },
+  {
+    id: "wellhub",
+    nome: "Wellhub",
+    descricao: "Antigo Gympass. Já tem pelo benefício da empresa? É só fazer o check-in no app.",
+    preco: null,
+    precoTexto: "Pelo app",
+    nota: "Aceito a partir do plano Silver",
+    inclui: ["Check-in pelo app Wellhub", "Treino de musculação na Zero Um"],
+    botao: "Ver a Zero Um no Wellhub",
+    link: "https://wellhub.com/pt-br/search/partners/zero-um-ct-americana-nossa-senhora-de-fatima/",
+  },
+  {
+    id: "totalpass",
+    nome: "TotalPass",
+    descricao: "Tem TotalPass pela empresa? A Zero Um está na rede.",
+    preco: null,
+    precoTexto: "Pelo app",
+    nota: "Aceito a partir do plano TP2",
+    inclui: ["Check-in pelo app TotalPass", "Treino de musculação na Zero Um"],
+    botao: "Ver a Zero Um no TotalPass",
+    link: "https://totalpass.com/br/academias/zero-um-ct-americana/",
   },
 ];
 
@@ -416,8 +481,12 @@ export const eventos: Evento[] = [
 
 export const faq: { q: string; a: string | Todo }[] = [
   {
-    q: "Funciona mesmo 24 horas, todo dia?",
-    a: "Sim, a Zero Um funciona 24 horas. Domingos e feriados: veja a confirmação na página de horários.",
+    q: "Funciona mesmo 24 horas?",
+    a: "Sim. A Zero Um funciona 24 horas: dá para treinar de madrugada, antes do trabalho ou depois da faculdade.",
+  },
+  {
+    q: "Quanto custa?",
+    a: "A diária avulsa custa R$ 39,90. Os valores dos planos são passados pela recepção: chame no WhatsApp (19) 99620-9541 que a resposta é rápida.",
   },
   { q: "Tem professor de madrugada?", a: { todo: "Confirmar se há professor no salão na madrugada" } },
   {
@@ -426,11 +495,11 @@ export const faq: { q: string; a: string | Todo }[] = [
   },
   {
     q: "Nunca treinei. Por onde começo?",
-    a: "Agende uma aula experimental. Você conhece a estrutura, conversa com um professor e sai com um treino montado para o seu objetivo.",
+    a: "Agende uma aula experimental pelo site ou pelo WhatsApp. Você conhece a estrutura e tira as dúvidas com a equipe antes de decidir.",
   },
   {
-    q: "Dá para treinar só um dia?",
-    a: "Dá. A diária avulsa custa R$ 39,90 (em campanhas pode haver valor promocional). Chama no WhatsApp para combinar.",
+    q: "Onde fica?",
+    a: "Rua Orlando de Santi, 220, Campo Limpo, Americana/SP. Procure o “01” vermelho na fachada preta.",
   },
   { q: "Tem estacionamento?", a: { todo: "Confirmar estacionamento" } },
   { q: "É seguro treinar de madrugada?", a: { todo: "Responder só com fatos: câmeras, controle de acesso, equipe" } },

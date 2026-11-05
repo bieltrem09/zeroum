@@ -16,23 +16,31 @@ npm run build && npm start   # produção
 
 | Rota | Conteúdo |
 |---|---|
-| `/` | Home: hero, manifesto, estrutura, horários, planos, professores, primeiro treino, resultados, depoimentos, comunidade, CTA, localização, FAQ |
-| `/estrutura` | Tour pelos ambientes |
-| `/planos` | Planos, agregadores e FAQ de pagamento |
-| `/horarios` | 24h, grade por turno e avaliação física |
-| `/professores` | Equipe |
-| `/resultados` | Antes e depois, conquistas e depoimentos |
+| `/` | Home: o que é → estrutura → 24h → planos e valores → avaliações → como começar → onde fica → dúvidas |
+| `/sobre` | Sobre nós: quem é a Zero Um, números, o que tem lá dentro, equipe (pelas avaliações), avaliações do Google |
+| `/estrutura` | Ambientes com foto + lista do que mais tem |
+| `/planos` | Tabela de planos (`components/ui/pricing-table`): plano, diária, Wellhub e TotalPass |
 | `/contato` | WhatsApp, Instagram, mapa e FAQ |
 | `/aula-experimental` | Formulário que abre o WhatsApp com a mensagem pronta |
 | `/politica-de-privacidade` | LGPD |
 | `/styleguide` | Logo, cores, tipografia e componentes (fora do índice de busca) |
 
+`/professores`, `/resultados` e `/horarios` redirecionam para `/sobre#equipe`, `/sobre#avaliacoes` e `/#horarios`. Essas páginas voltam quando houver conteúdo real.
+
+## shadcn/ui
+
+O projeto segue a estrutura do shadcn (`components.json`, `@/components/ui`, `@/lib/utils` com `cn()`). Os tokens semânticos (`primary`, `card`, `muted-foreground`…) estão em `src/app/globals.css`, mapeados para as cores da marca. Para adicionar outro componente:
+
+```bash
+npx shadcn@latest add <componente>
+```
+
 ## Como editar o conteúdo (sem mexer em componente)
 
 **Tudo** fica em **`src/content/zeroum.ts`**: endereço, planos e preços, professores, grade de horários, FAQ, eventos, depoimentos e conquistas.
 
-- O que ainda não foi confirmado está marcado como `{ todo: "..." }`, com valor `null` ou com lista vazia. Nesses casos o site mostra um aviso tracejado **"A CONFIRMAR"**, ou esconde o bloco (como o mapa de calor de horários).
-- Quando preencher o dado real, o aviso some sozinho.
+- O que ainda não foi confirmado está marcado como `{ todo: "..." }`, `null` ou lista vazia. **Isso não aparece para o visitante**: o bloco fica escondido. Para revisar as pendências na tela, rode com `NEXT_PUBLIC_SHOW_TODOS=1 npm run dev`.
+- Planos e formas de treinar: `formasDeTreinar` em `zeroum.ts`.
 - Exemplos:
   - **Preço:** em `planos[i].precos.mensal`, troque `null` por `129.9`.
   - **Endereço:** em `endereco.texto`, coloque `"Rua …, 200 · Bairro · Americana/SP"` e marque `confirmado: true`.
